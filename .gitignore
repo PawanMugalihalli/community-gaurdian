@@ -1,1 +1,39 @@
+# Environment
+.env
+.env.*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Django
+db.sqlite3
+*.log
+media/
+staticfiles/
+
+# Docker
+postgres_data/
+
+# IDE
 .vscode/
+.idea/
+*.swp
+*.swo
+
+# Mac
+.DS_Store
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
