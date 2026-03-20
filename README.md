@@ -82,12 +82,12 @@ docker-compose exec backend python manage.py test incidents.tests
 
 ### Data Flow
 Write path:
-  POST /api/incidents/ → saved raw immediately (unenriched)
-  APScheduler (every 5 min) → queries ai_enriched=False
-  → splits into chunks → sends each chunk to Groq together
-  → if Groq fails on a chunk → keyword fallback runs for that chunk
-  → writes enrichment back (category, severity, is_noise, action_steps)
-  → continues to next chunk regardless
+  POST /api/incidents/ → saved raw immediately (unenriched)  
+  APScheduler (every 5 min) → queries ai_enriched=False  
+  → splits into chunks → sends each chunk to Groq together  
+  → if Groq fails on a chunk → keyword fallback runs for that chunk  
+  → writes enrichment back (category, severity, is_noise, action_steps)  
+  → continues to next chunk regardless  
 
 Read path:
   GET /api/incidents/ → pure DB query (is_noise=False)
