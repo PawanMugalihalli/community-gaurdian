@@ -18,10 +18,11 @@ class IncidentViewSet(ViewSet):
         category = request.query_params.get('category')
         severity = request.query_params.get('severity')
         search = request.query_params.get('search')
-
+        
         profile = self._resolve_profile(profile_id)
         location = self._resolve_location(location_param, profile)
         concerns = self._resolve_concerns(category, profile)
+        search = self._resolve_search(search)
 
         incidents = IncidentService.get_incidents(
             location=location,
@@ -78,6 +79,12 @@ class IncidentViewSet(ViewSet):
         if category or not profile:
             return None
         return profile.concerns if profile.concerns else None
+    
+    def _resolve_search(self, raw):
+        if raw is None:
+            return None
+        stripped = raw.strip()
+        return stripped or None
 
     def _log_if_profile(self, profile, incidents):
         if profile:

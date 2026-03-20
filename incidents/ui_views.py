@@ -8,6 +8,26 @@ logger = logging.getLogger(__name__)
 
 API_BASE = "http://localhost:8000/api"
 
+# Areas offered in feed / profile / report UI (keep in sync with templates)
+REPORT_AREAS = frozenset({"Koramangala", "HSR Layout", "Whitefield"})
+
+
+def _report_location_select_value(form_data, user):
+    """POST body when re-rendering errors; otherwise profile location if it is a known area."""
+    if form_data:
+        return (form_data.get("location") or "").strip()
+    loc = (user.location or "").strip()
+    return loc if loc in REPORT_AREAS else ""
+
+
+def _report_page_context(user, form_data):
+    return {
+        "profile":          user,
+        "profile_location": user.location,
+        "form_data":        form_data,
+        "report_location":  _report_location_select_value(form_data, user),
+    }
+
 
 def _build_incident_stats(incidents):
     return {
@@ -105,17 +125,13 @@ def report_view(request):
             errors.append("Title must be at least 5 characters.")
         if len(description) < 10:
             errors.append("Description must be at least 10 characters.")
-        if len(location) < 3:
-            errors.append("Location must be at least 3 characters.")
+        if location not in REPORT_AREAS:
+            errors.append("Please select a valid area.")
 
         if errors:
             for e in errors:
                 messages.error(request, e)
-            return render(request, "incidents/report.html", {
-                "profile":          user,
-                "profile_location": user.location,
-                "form_data":        request.POST,
-            })
+            return render(request, "incidents/report.html", _report_page_context(user, request.POST))
 
         payload = {
             "title":       title,
@@ -138,14 +154,6 @@ def report_view(request):
             logger.error(f"Report submit error: {e}")
             messages.error(request, "Service error. Please try again.")
 
-        return render(request, "incidents/report.html", {
-            "profile":          user,
-            "profile_location": user.location,
-            "form_data":        request.POST,
-        })
+        return render(request, "incidents/report.html", _report_page_context(user, request.POST))
 
-    return render(request, "incidents/report.html", {
-        "profile":          user,
-        "profile_location": user.location,
-        "form_data":        {},
-    })
+    return render(request, "incidents/report.html", _report_page_context(user, {}))
