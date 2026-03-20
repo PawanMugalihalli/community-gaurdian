@@ -32,6 +32,13 @@ Second — the initial design had two separate endpoints: `/api/incidents/` for 
 
 ### Tradeoffs & Prioritization
 
+**Key tradeoffs made:**
+- **APScheduler vs Celery** — APScheduler runs inside Django with zero extra infrastructure. Celery would give better reliability and horizontal scaling in production but requires Redis and a separate worker process, which adds setup complexity for a take-home evaluation
+- **AI at write time vs read time** — running enrichment in a background job means the feed is always a pure DB query. Tradeoff is that very new incidents appear without category or action steps until the next batch run (up to 5 minutes)
+- **Single User model via AbstractUser** — eliminates a join on every feed request. Tradeoff is tighter coupling between auth and app data
+- **Single `/api/incidents/` endpoint** — merged the public and personalised feeds into one endpoint with an optional `?profile_id=` param. Tradeoff is slightly more logic in one place, but avoids maintaining two endpoints that return the same data shape
+- **PostgreSQL over SQLite** — better concurrent write support and composite index performance. Tradeoff is slightly more setup, handled entirely by Docker Compose  
+
 **What I cut to stay within the time limit:**
 - Safe Circles (encrypted status sharing with trusted contacts) — designed but not implemented
 - Real-time notifications — out of scope for a prototype
@@ -51,13 +58,6 @@ Second — the initial design had two separate endpoints: `/api/incidents/` for 
 - APScheduler runs inside the Django process — in production this should be Celery so the enrichment job doesn't compete with web requests for resources
 - The Groq free tier has rate limits — if quota is exceeded the fallback runs automatically, but AI enrichment will not retry until quota resets
 - Location matching is string-based — handled by hardcoding location dropdowns in the UI to prevent mismatches
-
-**Key tradeoffs made:**
-- **APScheduler vs Celery** — APScheduler runs inside Django with zero extra infrastructure. Celery would give better reliability and horizontal scaling in production but requires Redis and a separate worker process, which adds setup complexity for a take-home evaluation
-- **AI at write time vs read time** — running enrichment in a background job means the feed is always a pure DB query. Tradeoff is that very new incidents appear without category or action steps until the next batch run (up to 5 minutes)
-- **Single User model via AbstractUser** — eliminates a join on every feed request. Tradeoff is tighter coupling between auth and app data
-- **Single `/api/incidents/` endpoint** — merged the public and personalised feeds into one endpoint with an optional `?profile_id=` param. Tradeoff is slightly more logic in one place, but avoids maintaining two endpoints that return the same data shape
-- **PostgreSQL over SQLite** — better concurrent write support and composite index performance. Tradeoff is slightly more setup, handled entirely by Docker Compose
 
 ---
 
