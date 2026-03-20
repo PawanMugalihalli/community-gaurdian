@@ -365,7 +365,15 @@
     </div>
     <div class="filter-group">
       <label>Location</label>
-      <input type="text" name="location" placeholder="e.g. Koramangala" value="{{ request.GET.location }}" />
+      <div class="filter-group">
+        <label>Location</label>
+        <select name="location">
+          <option value="">All locations</option>
+          <option value="Koramangala" {% if request.GET.location == 'Koramangala' %}selected{% endif %}>Koramangala</option>
+          <option value="HSR Layout"  {% if request.GET.location == 'HSR Layout'  %}selected{% endif %}>HSR Layout</option>
+          <option value="Whitefield"  {% if request.GET.location == 'Whitefield'  %}selected{% endif %}>Whitefield</option>
+        </select>
+      </div>
     </div>
     <div class="filter-group">
       <label>Min Severity</label>

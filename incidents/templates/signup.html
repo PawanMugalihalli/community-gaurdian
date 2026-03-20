@@ -148,10 +148,12 @@
 
       <div class="form-group">
         <label for="location">Your location</label>
-        <input type="text" id="location" name="location"
-               placeholder="e.g. Koramangala, Bangalore"
-               value="{{ form_data.location|default:'' }}"
-               required />
+        <select id="location" name="location" required>
+            <option value="" disabled {% if not form_data.location %}selected{% endif %}>Select your area</option>
+            <option value="Koramangala" {% if form_data.location == 'Koramangala' %}selected{% endif %}>Koramangala</option>
+            <option value="HSR Layout"  {% if form_data.location == 'HSR Layout'  %}selected{% endif %}>HSR Layout</option>
+            <option value="Whitefield"  {% if form_data.location == 'Whitefield'  %}selected{% endif %}>Whitefield</option>
+          </select>
         <p class="text-muted mt-1">Sets the default location for your safety feed.</p>
       </div>
 
