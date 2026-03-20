@@ -1,0 +1,116 @@
+[
+    {
+    "title": "Suspicious person near apartments",
+    "description": "Saw someone trying car door handles in the parking area late at night. Very concerning behavior.",
+    "location": "Koramangala",
+    "source": "user_report"
+    },
+    {
+    "title": "Someone checking cars in parking",
+    "description": "A suspicious individual was spotted checking multiple car doors in the apartment complex parking lot around midnight.",
+    "location": "Koramangala",
+    "source": "user_report"
+    },
+    {
+    "title": "Phishing message received",
+    "description": "Got a text message asking for my bank OTP and credit card details. The number looked suspicious and unofficial.",
+    "location": "Koramangala",
+    "source": "user_report"
+    },
+    {
+    "title": "Fake bank SMS",
+    "description": "Received an SMS pretending to be from my bank asking me to verify my account by sharing OTP and card details immediately.",
+    "location": "Koramangala",
+    "source": "user_report"
+    },
+    {
+      "title": "Phishing SMS received",
+      "description": "Got a suspicious OTP text from an unknown number asking for bank details and credit card information. The message claimed to be from a major bank.",
+      "location": "Koramangala",
+      "source": "user_report"
+    },
+    {
+      "title": "Suspicious person near apartments",
+      "description": "A person was seen checking car doors in the apartment parking lot at 2am. They fled when approached by security.",
+      "location": "Koramangala",
+      "source": "user_report"
+    },
+    {
+      "title": "Ugh traffic is so bad today",
+      "description": "Can't believe how terrible the traffic is today. Why does everyone drive so badly? So frustrated with this city.",
+      "location": "Koramangala",
+      "source": "social_media"
+    },
+    {
+      "title": "Local app data breach",
+      "description": "A popular local grocery delivery app reported a data breach. User emails and phone numbers may have been exposed to third parties.",
+      "location": "Indiranagar",
+      "source": "news"
+    },
+    {
+      "title": "Street light broken near park",
+      "description": "The street light near the main park entrance has been broken for 3 days. The area is very dark and unsafe for pedestrians at night.",
+      "location": "Indiranagar",
+      "source": "user_report"
+    },
+    {
+      "title": "This neighborhood is the worst",
+      "description": "I hate how noisy this place is. The neighbors are so annoying and inconsiderate. Can't believe I moved here.",
+      "location": "Indiranagar",
+      "source": "social_media"
+    },
+    {
+      "title": "Fraud call impersonating police",
+      "description": "Received a call from someone claiming to be a police officer demanding immediate payment to avoid arrest. Classic fraud attempt targeting elderly residents.",
+      "location": "HSR Layout",
+      "source": "user_report"
+    },
+    {
+      "title": "Heavy rainfall and waterlogging",
+      "description": "Severe waterlogging reported near the underpass. Water level is knee deep and vehicles are getting stuck. Avoid the area if possible.",
+      "location": "HSR Layout",
+      "source": "user_report"
+    },
+    {
+      "title": "Bike theft reported",
+      "description": "A motorcycle was stolen from outside a supermarket in broad daylight. CCTV footage is being reviewed. Residents advised to use locks.",
+      "location": "HSR Layout",
+      "source": "user_report"
+    },
+    {
+      "title": "Why is everyone so rude",
+      "description": "So annoying how people just cut queues at the grocery store. Unbelievable behavior. This city has no civic sense whatsoever.",
+      "location": "Whitefield",
+      "source": "social_media"
+    },
+    {
+      "title": "Suspicious email from bank",
+      "description": "Received an email asking to verify account details by clicking a link. The sender domain looked fake. Possible phishing attempt targeting bank customers.",
+      "location": "Whitefield",
+      "source": "user_report"
+    },
+    {
+      "title": "Gas leak smell near residential area",
+      "description": "Strong smell of gas reported near the residential complex on the main road. Residents have been asked to stay away from the area until authorities arrive.",
+      "location": "Whitefield",
+      "source": "user_report"
+    },
+    {
+      "title": "Thunderstorm warning issued",
+      "description": "Local weather authorities have issued a thunderstorm warning for the evening. Heavy rain, lightning and strong winds expected. Stay indoors if possible.",
+      "location": "Marathahalli",
+      "source": "news"
+    },
+    {
+      "title": "ATM skimming device found",
+      "description": "A skimming device was discovered on an ATM near the metro station. Customers who used the ATM in the last 48 hours are advised to check their statements.",
+      "location": "Marathahalli",
+      "source": "news"
+    },
+    {
+      "title": "Chain snatching incident",
+      "description": "A woman reported her gold chain was snatched by two men on a bike near the market area. Police have registered a case and are reviewing CCTV footage.",
+      "location": "Marathahalli",
+      "source": "user_report"
+    }
+  ]

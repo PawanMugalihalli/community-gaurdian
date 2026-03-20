@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+{% block title %}Sign Up — Community Guardian{% endblock %}
+
+{% block extra_head %}
+<style>
+  .auth-wrap {
+    max-width: 480px;
+    margin: 3rem auto 0;
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .auth-logo .shield {
+    width: 48px;
+    height: 48px;
+    background: var(--accent);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto .75rem;
+  }
+
+  .auth-logo .shield svg { width: 22px; height: 22px; fill: #fff; }
+
+  .auth-logo h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    letter-spacing: -.02em;
+  }
+
+  .auth-logo p {
+    font-size: .9rem;
+    color: var(--text-muted);
+    margin-top: .3rem;
+    font-weight: 300;
+  }
+
+  .auth-card { padding: 2rem; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+
+  .section-label {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 1.5rem 0 .75rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .concern-pills-wrapper { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+  .concern-pill-btn {
+    padding: .45rem 1rem;
+    border-radius: 99px;
+    border: 1.5px solid var(--border);
+    font-size: .875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    background: var(--bg);
+    color: var(--text-muted);
+    user-select: none;
+  }
+
+  .concern-pill-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .concern-pill-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .auth-footer {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: .875rem;
+    color: var(--text-muted);
+  }
+
+  .auth-footer a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .auth-footer a:hover { text-decoration: underline; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-logo">
+    <div class="shield">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/></svg>
+    </div>
+    <h1>Create your account</h1>
+    <p>Set up your Community Guardian profile</p>
+  </div>
+
+  <div class="card auth-card">
+    <form method="POST" action="/signup/">
+      {% csrf_token %}
+
+      <div class="section-label">Account</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username"
+                 placeholder="e.g. ravi_k"
+                 value="{{ form_data.username|default:'' }}"
+                 autofocus required />
+        </div>
+        <div class="form-group">
+          <label for="name">Display name</label>
+          <input type="text" id="name" name="name"
+                 placeholder="e.g. Ravi"
+                 value="{{ form_data.name|default:'' }}"
+                 required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password"
+                 placeholder="Min. 8 characters" required />
+        </div>
+        <div class="form-group">
+          <label for="confirm_password">Confirm password</label>
+          <input type="password" id="confirm_password" name="confirm_password"
+                 placeholder="Repeat password" required />
+        </div>
+      </div>
+
+      <div class="section-label">Safety profile</div>
+
+      <div class="form-group">
+        <label for="location">Your location</label>
+        <input type="text" id="location" name="location"
+               placeholder="e.g. Koramangala, Bangalore"
+               value="{{ form_data.location|default:'' }}"
+               required />
+        <p class="text-muted mt-1">Sets the default location for your safety feed.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Safety concerns</label>
+        <div class="concern-pills-wrapper" id="concernPills">
+          <button type="button" class="concern-pill-btn {% if 'physical' in selected_concerns %}active{% endif %}" data-value="physical">
+            🚨 Physical Safety
+          </button>
+          <button type="button" class="concern-pill-btn {% if 'digital' in selected_concerns %}active{% endif %}" data-value="digital">
+            💻 Digital / Scams
+          </button>
+          <button type="button" class="concern-pill-btn {% if 'weather' in selected_concerns %}active{% endif %}" data-value="weather">
+            🌧 Weather
+          </button>
+        </div>
+        <div id="concernInputs">
+          {% for c in selected_concerns %}
+            <input type="hidden" name="concerns" value="{{ c }}" />
+          {% endfor %}
+        </div>
+        <p class="text-muted mt-1">Your feed will filter to these by default.</p>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:.75rem; margin-top:.5rem;">
+        Create account
+      </button>
+    </form>
+
+    <div class="auth-footer" style="margin-top:1.25rem;">
+      Already have an account? <a href="/login/">Sign in →</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const pills    = document.querySelectorAll('.concern-pill-btn');
+  const inputsEl = document.getElementById('concernInputs');
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      pill.classList.toggle('active');
+      syncHiddenInputs();
+    });
+  });
+
+  function syncHiddenInputs() {
+    inputsEl.innerHTML = '';
+    document.querySelectorAll('.concern-pill-btn.active').forEach(p => {
+      const inp = document.createElement('input');
+      inp.type  = 'hidden';
+      inp.name  = 'concerns';
+      inp.value = p.dataset.value;
+      inputsEl.appendChild(inp);
+    });
+  }
+</script>
+{% endblock %}

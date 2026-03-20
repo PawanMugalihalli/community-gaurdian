@@ -1,0 +1,534 @@
+{% extends "base.html" %}
+{% block title %}Safety Feed — Community Guardian{% endblock %}
+{% block nav_feed %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── FEED MODE TOGGLE ── */
+  .feed-mode-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .85rem 1.1rem;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .feed-mode-left {
+    display: flex;
+    flex-direction: column;
+    gap: .2rem;
+  }
+
+  .feed-mode-title {
+    font-size: .9375rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .feed-mode-desc {
+    font-size: .8125rem;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
+
+  /* Toggle switch */
+  .toggle-wrap {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .toggle-wrap .toggle-label {
+    font-size: .875rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color .2s;
+  }
+
+  .toggle-wrap.active .toggle-label { color: var(--accent); }
+
+  .toggle-track {
+    width: 40px;
+    height: 22px;
+    border-radius: 99px;
+    background: var(--border);
+    position: relative;
+    transition: background .2s;
+    flex-shrink: 0;
+  }
+
+  .toggle-track.active { background: var(--accent); }
+
+  .toggle-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform .2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  }
+
+  .toggle-track.active .toggle-thumb { transform: translateX(18px); }
+
+  /* ── PROFILE BANNER (shown when personalised ON) ── */
+  .profile-banner {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: .85rem 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: .875rem;
+  }
+
+  .profile-banner .profile-info {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    flex-wrap: wrap;
+  }
+
+  .profile-banner .profile-name { font-weight: 600; color: var(--text); }
+
+  .profile-banner .profile-location {
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: .3rem;
+  }
+
+  .profile-banner .concerns-list { display: flex; gap: .4rem; flex-wrap: wrap; }
+
+  .profile-banner .concern-tag {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: .15rem .5rem;
+    border-radius: 4px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .profile-banner a { font-size: .8125rem; color: var(--accent); text-decoration: none; white-space: nowrap; }
+  .profile-banner a:hover { text-decoration: underline; }
+
+  /* ── FILTER TOOLBAR (shown when personalised OFF) ── */
+  .feed-toolbar {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+
+  .feed-toolbar .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+    flex: 1;
+    min-width: 140px;
+  }
+
+  .feed-toolbar .filter-group.search-group { flex: 2; min-width: 200px; }
+
+  .filter-group label {
+    font-size: .75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    padding: .55rem .75rem;
+    font-size: .875rem;
+  }
+
+  .feed-toolbar .btn { align-self: flex-end; white-space: nowrap; }
+
+  /* ── INCIDENT CARDS ── */
+  .incidents-list { display: flex; flex-direction: column; gap: .75rem; }
+
+  .incident-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: .75rem 1rem;
+    box-shadow: var(--shadow);
+    transition: box-shadow .15s, border-color .15s;
+    animation: fadeUp .3s ease both;
+  }
+
+  .incident-card:hover {
+    box-shadow: var(--shadow-lg);
+    border-color: #C8BFB0;
+  }
+
+  .severity-bar {
+    width: 3px;
+    border-radius: 2px;
+    align-self: stretch;
+    min-height: 40px;
+  }
+
+  .sev-bar-1, .sev-bar-2 { background: #86EFAC; }
+  .sev-bar-3             { background: #FCD34D; }
+  .sev-bar-4             { background: #FB923C; }
+  .sev-bar-5             { background: #F87171; }
+
+  .incident-meta {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+    margin-bottom: .45rem;
+  }
+
+  .incident-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: .3rem;
+    line-height: 1.3;
+  }
+
+  .incident-description {
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: .65rem;
+    font-weight: 300;
+  }
+
+  .incident-action {
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: .6rem .8rem;
+    font-size: .8375rem;
+    color: var(--text);
+    line-height: 1.45;
+  }
+
+  .incident-action .action-icon { font-size: .95rem; flex-shrink: 0; margin-top: .05rem; }
+
+  .incident-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    flex-wrap: wrap;
+    margin-top: .65rem;
+  }
+
+  .incident-location {
+    font-size: .8rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+  }
+
+  .incident-time { font-size: .78rem; color: var(--text-muted); }
+
+  .ai-tag {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: .15rem .45rem;
+    border-radius: 4px;
+    color: var(--accent);
+    background: var(--green-bg);
+    border: 1px solid #BBF7D0;
+  }
+
+  .fallback-tag {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: .15rem .45rem;
+    border-radius: 4px;
+    color: var(--amber);
+    background: var(--amber-bg);
+    border: 1px solid #FDE68A;
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+  }
+
+  .stat-item { display: flex; flex-direction: column; gap: .15rem; }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: .75rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .stat-divider { width: 1px; background: var(--border); align-self: stretch; }
+
+  /* ── VISIBILITY HELPERS ── */
+  .hidden { display: none !important; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Safety Feed</h1>
+  <p>Enriched, noise-filtered alerts for your community.</p>
+</div>
+
+<!-- Mode toggle -->
+<div class="feed-mode-bar">
+  <div class="feed-mode-left">
+    <span class="feed-mode-title" id="modeTitle">Public feed</span>
+    <span class="feed-mode-desc" id="modeDesc">Showing all incidents — use filters to narrow down.</span>
+  </div>
+  <label class="toggle-wrap" id="toggleWrap" onclick="toggleMode()">
+    <span class="toggle-label" id="toggleLabel">Personalise</span>
+    <div class="toggle-track" id="toggleTrack">
+      <div class="toggle-thumb"></div>
+    </div>
+  </label>
+</div>
+
+<!-- Profile banner (personalised mode only) -->
+<div class="profile-banner hidden" id="profileBanner">
+  <div class="profile-info">
+    <span class="profile-name">{{ profile.name }}</span>
+    <span class="profile-location">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      {{ profile.location }}
+    </span>
+    <div class="concerns-list">
+      {% for c in profile.concerns %}
+        <span class="concern-tag">{{ c }}</span>
+      {% endfor %}
+    </div>
+  </div>
+  <a href="/profile/">Edit profile →</a>
+</div>
+
+<!-- Public filters (default mode only) -->
+<form method="GET" action="{% url 'feed' %}" id="publicForm" class="feed-filter-form">
+  <div class="feed-toolbar">
+    <div class="filter-group search-group">
+      <label>Search</label>
+      <input type="text" name="search" placeholder="e.g. phishing, flood…" value="{{ request.GET.search }}" />
+    </div>
+    <div class="filter-group">
+      <label>Category</label>
+      <select name="category">
+        <option value="">All categories</option>
+        <option value="physical" {% if request.GET.category == 'physical' %}selected{% endif %}>Physical</option>
+        <option value="digital"  {% if request.GET.category == 'digital'  %}selected{% endif %}>Digital</option>
+        <option value="weather"  {% if request.GET.category == 'weather'  %}selected{% endif %}>Weather</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Location</label>
+      <input type="text" name="location" placeholder="e.g. Koramangala" value="{{ request.GET.location }}" />
+    </div>
+    <div class="filter-group">
+      <label>Min Severity</label>
+      <select name="severity">
+        <option value="">Any</option>
+        <option value="3" {% if request.GET.severity == '3' %}selected{% endif %}>3+</option>
+        <option value="4" {% if request.GET.severity == '4' %}selected{% endif %}>4+</option>
+        <option value="5" {% if request.GET.severity == '5' %}selected{% endif %}>5 only</option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+    <a href="{% url 'feed' %}" class="btn btn-secondary">Clear</a>
+  </div>
+</form>
+
+<!-- Hidden form for personalised mode — submits with profile_id -->
+<form method="GET" action="{% url 'feed' %}" id="personalForm" class="hidden">
+  <input type="hidden" name="profile_id" value="{{ profile.id }}" />
+</form>
+
+<!-- Stats -->
+{% if incidents %}
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-value">{{ incidents|length }}</span>
+    <span class="stat-label">Alerts</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-value">{{ high_severity_count }}</span>
+    <span class="stat-label">High severity</span>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <span class="stat-value">{{ ai_enriched_count }}</span>
+    <span class="stat-label">AI-enriched</span>
+  </div>
+</div>
+{% endif %}
+
+<!-- Incident list -->
+<div class="incidents-list">
+  {% for incident in incidents %}
+  <div class="incident-card">
+    <div class="severity-bar sev-bar-{{ incident.severity }}"></div>
+    <div class="incident-body">
+      <div class="incident-meta">
+        <span class="badge badge-{{ incident.category }}">
+          <span class="severity-dot sev-{{ incident.severity }}"></span>
+          {{ incident.category|capfirst }}
+        </span>
+        <span class="text-muted" style="font-size:.78rem;">Severity {{ incident.severity }}/5</span>
+        {% if incident.ai_enriched %}
+          <span class="ai-tag">AI</span>
+        {% else %}
+          <span class="fallback-tag">Rule-based</span>
+        {% endif %}
+      </div>
+      <div class="incident-title">{{ incident.title }}</div>
+      <div class="incident-description">{{ incident.description }}</div>
+      {% if incident.action_steps %}
+      <div class="incident-action">
+        <span class="action-icon">💡</span>
+        <span>{{ incident.action_steps }}</span>
+      </div>
+      {% endif %}
+      <div class="incident-footer">
+        <span class="incident-location">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          {{ incident.location }}
+        </span>
+        <span class="incident-time">{{ incident.created_at|date:"M d, g:i a" }}</span>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="card">
+    <div class="empty-state">
+      <div class="empty-icon">🔍</div>
+      <h3>No alerts found</h3>
+      <p>Try adjusting your filters or check back later. New incidents are processed every 5 minutes.</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+(function () {
+  var STORAGE_KEY = 'cg_personalised';
+  var personalised = localStorage.getItem(STORAGE_KEY) === '1';
+
+  var toggleTrack   = document.getElementById('toggleTrack');
+  var toggleWrap    = document.getElementById('toggleWrap');
+  var toggleLabel   = document.getElementById('toggleLabel');
+  var modeTitle     = document.getElementById('modeTitle');
+  var modeDesc      = document.getElementById('modeDesc');
+  var profileBanner = document.getElementById('profileBanner');
+  var publicForm    = document.getElementById('publicForm');
+  var personalForm  = document.getElementById('personalForm');
+
+  // Check if page was loaded with profile_id — if so, start in personalised mode
+  var urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('profile_id')) {
+    personalised = true;
+    localStorage.setItem(STORAGE_KEY, '1');
+  }
+
+  function applyMode(animated) {
+    if (personalised) {
+      toggleTrack.classList.add('active');
+      toggleWrap.classList.add('active');
+      toggleLabel.textContent = 'Personalised';
+      modeTitle.textContent   = 'Personalised feed';
+      modeDesc.textContent    = 'Showing alerts filtered by your profile — location and concern categories.';
+      profileBanner.classList.remove('hidden');
+      publicForm.classList.add('hidden');
+    } else {
+      toggleTrack.classList.remove('active');
+      toggleWrap.classList.remove('active');
+      toggleLabel.textContent = 'Personalise';
+      modeTitle.textContent   = 'Public feed';
+      modeDesc.textContent    = 'Showing all incidents — use filters to narrow down.';
+      profileBanner.classList.add('hidden');
+      publicForm.classList.remove('hidden');
+    }
+  }
+
+  window.toggleMode = function () {
+    personalised = !personalised;
+    localStorage.setItem(STORAGE_KEY, personalised ? '1' : '0');
+    applyMode(true);
+
+    // reload with or without profile_id
+    if (personalised) {
+      personalForm.submit();
+    } else {
+      window.location.href = "{% url 'feed' %}";
+    }
+  };
+
+  applyMode(false);
+
+  // Auto-submit public filters on select change / search input
+  var form = publicForm;
+  form.querySelectorAll('select').forEach(function (sel) {
+    sel.addEventListener('change', function () { form.submit(); });
+  });
+
+  var searchTimer;
+  var searchInput = form.querySelector('input[name="search"]');
+  if (searchInput) {
+    searchInput.addEventListener('input', function () {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function () { form.submit(); }, 450);
+    });
+  }
+
+  var locInput = form.querySelector('input[name="location"]');
+  if (locInput) {
+    locInput.addEventListener('change', function () { form.submit(); });
+  }
+})();
+</script>
+{% endblock %}

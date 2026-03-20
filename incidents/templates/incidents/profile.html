@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+{% block title %}My Profile — Community Guardian{% endblock %}
+{% block nav_profile %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+  .profile-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 640px) { .profile-layout { grid-template-columns: 1fr; } }
+
+  .profile-card { padding: 1.75rem; }
+
+  .profile-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .edit-toggle {
+    font-size: .8125rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    padding: .3rem .7rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    transition: all .15s;
+  }
+
+  .edit-toggle:hover { background: var(--bg); }
+
+  /* View mode */
+  .profile-view { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .view-field {}
+
+  .view-field .field-label {
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: .3rem;
+  }
+
+  .view-field .field-value {
+    font-size: 1rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .view-field .field-concerns {
+    display: flex;
+    gap: .4rem;
+    flex-wrap: wrap;
+    margin-top: .25rem;
+  }
+
+  .concern-chip {
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    padding: .25rem .6rem;
+    border-radius: 4px;
+  }
+
+  .concern-chip.physical { background: var(--red-bg);   color: var(--red);   }
+  .concern-chip.digital  { background: var(--blue-bg);  color: var(--blue);  }
+  .concern-chip.weather  { background: var(--amber-bg); color: var(--amber); }
+  .concern-chip.empty    { background: var(--bg); color: var(--text-muted); border: 1px solid var(--border); }
+
+  .profile-divider { height: 1px; background: var(--border); }
+
+  .user-meta {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.25rem;
+  }
+
+  .user-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .user-meta-info {}
+  .user-meta-name { font-weight: 600; font-size: 1rem; color: var(--text); }
+  .user-meta-username { font-size: .8125rem; color: var(--text-muted); }
+
+  /* Edit mode */
+  .profile-edit { display: none; }
+  .profile-edit.active { display: block; }
+  .profile-view.hidden { display: none; }
+
+  .concern-pills-wrapper { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+  .concern-pill-btn {
+    padding: .45rem 1rem;
+    border-radius: 99px;
+    border: 1.5px solid var(--border);
+    font-size: .875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .15s;
+    background: var(--bg);
+    color: var(--text-muted);
+    user-select: none;
+  }
+
+  .concern-pill-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .concern-pill-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* Sidebar */
+  .side-info { display: flex; flex-direction: column; gap: 1rem; }
+
+  .info-card { padding: 1.25rem 1.4rem; }
+
+  .info-card h3 {
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: .75rem;
+  }
+
+  .info-card p {
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  .info-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+  }
+
+  .info-card ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: .6rem;
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .info-card ul li .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: .38rem;
+  }
+
+  .logout-link {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .875rem;
+    color: var(--red);
+    text-decoration: none;
+    padding: .6rem .85rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--red-bg);
+    background: var(--red-bg);
+    transition: all .15s;
+    width: fit-content;
+  }
+
+  .logout-link:hover { background: #FCA5A5; border-color: #FCA5A5; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>My Profile</h1>
+  <p>Your identity and safety preferences.</p>
+</div>
+
+<div class="profile-layout">
+
+  <!-- LEFT: Profile card -->
+  <div class="card profile-card">
+    <h2>
+      Profile
+      <a href="?edit={% if edit_mode %}0{% else %}1{% endif %}" class="edit-toggle" id="editToggle">
+        {% if edit_mode %}Cancel{% else %}Edit{% endif %}
+      </a>
+    </h2>
+
+    <!-- VIEW MODE -->
+    <div class="profile-view {% if edit_mode %}hidden{% endif %}" id="viewMode">
+      <div class="user-meta">
+        <div class="user-avatar">{{ profile.name|first|upper }}</div>
+        <div class="user-meta-info">
+          <div class="user-meta-name">{{ profile.name }}</div>
+          <div class="user-meta-username">@{{ profile.username }}</div>
+        </div>
+      </div>
+
+      <div class="view-field">
+        <div class="field-label">Location</div>
+        <div class="field-value">
+          {% if profile.location %}
+            {{ profile.location }}
+          {% else %}
+            <span style="color:var(--text-muted); font-weight:400;">Not set</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="view-field">
+        <div class="field-label">Safety concerns</div>
+        <div class="field-concerns">
+          {% for c in profile.concerns %}
+            <span class="concern-chip {{ c }}">{{ c|capfirst }}</span>
+          {% empty %}
+            <span class="concern-chip empty">None selected</span>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="view-field">
+        <div class="field-label">Member since</div>
+        <div class="field-value" style="font-weight:400; font-size:.9375rem;">
+          {{ profile.date_joined|date:"F d, Y" }}
+        </div>
+      </div>
+
+      <div style="margin-top: .5rem;">
+        <a href="{% url 'feed' %}" class="btn btn-primary" style="text-decoration:none;">
+          View my feed →
+        </a>
+      </div>
+    </div>
+
+    <!-- EDIT MODE -->
+    <div class="profile-edit {% if edit_mode %}active{% endif %}" id="editMode">
+      <form method="POST" action="/profile/">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="name">Display name</label>
+          <input type="text" id="name" name="name"
+                 value="{{ profile.name }}" required />
+        </div>
+
+        <div class="form-group">
+          <label for="location">Location</label>
+          <input type="text" id="location" name="location"
+                 placeholder="e.g. Koramangala, Bangalore"
+                 value="{{ profile.location }}" required />
+        </div>
+
+        <div class="form-group">
+          <label>Safety concerns</label>
+          <div class="concern-pills-wrapper">
+            <button type="button" class="concern-pill-btn {% if 'physical' in selected_concerns %}active{% endif %}" data-value="physical">
+              🚨 Physical Safety
+            </button>
+            <button type="button" class="concern-pill-btn {% if 'digital' in selected_concerns %}active{% endif %}" data-value="digital">
+              💻 Digital / Scams
+            </button>
+            <button type="button" class="concern-pill-btn {% if 'weather' in selected_concerns %}active{% endif %}" data-value="weather">
+              🌧 Weather
+            </button>
+          </div>
+          <div id="concernInputs">
+            {% for c in selected_concerns %}
+              <input type="hidden" name="concerns" value="{{ c }}" />
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="flex gap-2" style="margin-top:1.5rem;">
+          <button type="submit" class="btn btn-primary">Save changes</button>
+          <a href="/profile/" class="btn btn-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- RIGHT: Sidebar -->
+  <div class="side-info">
+    <div class="card info-card">
+      <h3>How your profile is used</h3>
+      <ul>
+        <li><span class="dot"></span> Your location sets the default filter on your feed</li>
+        <li><span class="dot"></span> Your concern categories narrow the feed automatically</li>
+        <li><span class="dot"></span> You can still override both filters manually at any time</li>
+      </ul>
+    </div>
+
+    <div class="card info-card">
+      <h3>Privacy note</h3>
+      <p>Your location is used only to filter incident reports. It is never shared with third parties or used for tracking. All data is synthetic for demonstration purposes.</p>
+    </div>
+
+    <div class="card info-card">
+      <h3>Account</h3>
+      <p style="margin-bottom:.85rem;">Signed in as <strong>{{ profile.username }}</strong></p>
+      <a href="/logout/" class="logout-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  const pills    = document.querySelectorAll('.concern-pill-btn');
+  const inputsEl = document.getElementById('concernInputs');
+
+  if (pills.length) {
+    pills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        pill.classList.toggle('active');
+        syncHiddenInputs();
+      });
+    });
+  }
+
+  function syncHiddenInputs() {
+    if (!inputsEl) return;
+    inputsEl.innerHTML = '';
+    document.querySelectorAll('.concern-pill-btn.active').forEach(p => {
+      const inp = document.createElement('input');
+      inp.type  = 'hidden';
+      inp.name  = 'concerns';
+      inp.value = p.dataset.value;
+      inputsEl.appendChild(inp);
+    });
+  }
+</script>
+{% endblock %}

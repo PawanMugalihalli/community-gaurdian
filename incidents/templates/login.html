@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Login — Community Guardian{% endblock %}
+
+{% block extra_head %}
+<style>
+  .auth-wrap {
+    max-width: 420px;
+    margin: 4rem auto 0;
+  }
+
+  .auth-logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .auth-logo .shield {
+    width: 48px;
+    height: 48px;
+    background: var(--accent);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto .75rem;
+  }
+
+  .auth-logo .shield svg { width: 22px; height: 22px; fill: #fff; }
+
+  .auth-logo h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    letter-spacing: -.02em;
+    color: var(--text);
+  }
+
+  .auth-logo p {
+    font-size: .9rem;
+    color: var(--text-muted);
+    margin-top: .3rem;
+    font-weight: 300;
+  }
+
+  .auth-card {
+    padding: 2rem;
+  }
+
+  .auth-footer {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: .875rem;
+    color: var(--text-muted);
+  }
+
+  .auth-footer a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .auth-footer a:hover { text-decoration: underline; }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-logo">
+    <div class="shield">
+      <svg viewBox="0 0 24 24"><path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/></svg>
+    </div>
+    <h1>Community Guardian</h1>
+    <p>Sign in to your safety dashboard</p>
+  </div>
+
+  <div class="card auth-card">
+    <form method="POST" action="/login/">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username"
+               placeholder="Enter your username"
+               value="{{ form_data.username|default:'' }}"
+               autofocus required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password"
+               placeholder="Enter your password"
+               required />
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:.75rem;">
+        Sign in
+      </button>
+    </form>
+
+    <div class="divider"></div>
+
+    <div class="auth-footer">
+      Don't have an account? <a href="/signup/">Create one →</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

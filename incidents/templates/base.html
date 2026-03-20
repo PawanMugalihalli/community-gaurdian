@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Community Guardian{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #F5F2ED;
+      --bg-card:   #FDFCFA;
+      --border:    #E0D9CE;
+      --text:      #1C1A17;
+      --text-muted:#7A7268;
+      --accent:    #2D5016;
+      --accent-lt: #4A7C2F;
+      --amber:     #B45309;
+      --amber-bg:  #FEF3C7;
+      --red:       #991B1B;
+      --red-bg:    #FEE2E2;
+      --blue:      #1E40AF;
+      --blue-bg:   #DBEAFE;
+      --green-bg:  #DCFCE7;
+      --green:     #166534;
+      --shadow:    0 1px 3px rgba(28,26,23,.08), 0 4px 12px rgba(28,26,23,.04);
+      --shadow-lg: 0 4px 16px rgba(28,26,23,.10), 0 12px 40px rgba(28,26,23,.06);
+      --radius:    10px;
+      --radius-sm: 6px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      text-decoration: none;
+    }
+
+    .nav-brand .shield {
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-brand .shield svg { width: 14px; height: 14px; fill: #fff; }
+
+    .nav-brand span {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem;
+      color: var(--text);
+      letter-spacing: -.01em;
+    }
+
+    .nav-links { display: flex; gap: .25rem; align-items: center; }
+
+    .nav-links a {
+      font-size: .875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: .4rem .75rem;
+      border-radius: var(--radius-sm);
+      transition: color .15s, background .15s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--text); background: var(--bg); }
+
+    .nav-links .btn-report {
+      background: var(--accent);
+      color: #fff !important;
+      padding: .45rem 1rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .nav-links .btn-report:hover { background: var(--accent-lt); }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 900px; margin: 0 auto; padding: 2.5rem 1.5rem; }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2rem;
+      letter-spacing: -.02em;
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .page-header p {
+      font-size: .9375rem;
+      color: var(--text-muted);
+      margin-top: .4rem;
+      font-weight: 300;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    /* ── FORM ELEMENTS ── */
+    .form-group { margin-bottom: 1.25rem; }
+
+    label {
+      display: block;
+      font-size: .8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: .4rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      padding: .65rem .85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9375rem;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(45,80,22,.12);
+    }
+
+    textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      padding: .6rem 1.25rem;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+      border: none;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: var(--accent-lt); }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover { background: var(--bg); color: var(--text); }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      font-size: .75rem;
+      font-weight: 600;
+      padding: .2rem .55rem;
+      border-radius: 99px;
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+
+    .badge-physical { background: var(--red-bg);   color: var(--red);   }
+    .badge-digital  { background: var(--blue-bg);  color: var(--blue);  }
+    .badge-weather  { background: var(--amber-bg); color: var(--amber); }
+
+    .severity-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .sev-1,.sev-2 { background: #86EFAC; }
+    .sev-3        { background: #FCD34D; }
+    .sev-4        { background: #FB923C; }
+    .sev-5        { background: #F87171; }
+
+    /* ── ALERTS / MESSAGES ── */
+    .messages { margin-bottom: 1.5rem; }
+
+    .message {
+      padding: .75rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      margin-bottom: .5rem;
+      border-left: 3px solid;
+    }
+
+    .message.success { background: var(--green-bg); color: var(--green); border-color: var(--green); }
+    .message.error   { background: var(--red-bg);   color: var(--red);   border-color: var(--red);   }
+    .message.info    { background: var(--blue-bg);  color: var(--blue);  border-color: var(--blue);  }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--text-muted);
+    }
+
+    .empty-state .empty-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: .4;
+    }
+
+    .empty-state h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: .4rem;
+    }
+
+    .empty-state p { font-size: .9rem; max-width: 320px; margin: 0 auto; }
+
+    /* ── CONCERN PILLS ── */
+    .concern-pills { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+    .concern-pill {
+      padding: .45rem 1rem;
+      border-radius: 99px;
+      border: 1.5px solid var(--border);
+      font-size: .875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all .15s;
+      background: var(--bg);
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .concern-pill:hover { border-color: var(--accent); color: var(--accent); }
+
+    .concern-pill.selected {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* ── UTIL ── */
+    .text-muted { color: var(--text-muted); font-size: .875rem; }
+    .mt-1 { margin-top: .5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+    .flex { display: flex; }
+    .gap-2 { gap: .5rem; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+
+    /* ── FADE IN ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-up {
+      animation: fadeUp .35s ease both;
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <nav>
+    <a href="{% url 'feed' %}" class="nav-brand">
+      <div class="shield">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L3 7v5c0 5.25 3.75 10.15 9 11.35C17.25 22.15 21 17.25 21 12V7L12 2z"/>
+        </svg>
+      </div>
+      <span>Community Guardian</span>
+    </a>
+    <div class="nav-links">
+      <a href="{% url 'feed' %}" class="{% block nav_feed %}{% endblock %}">Feed</a>
+      <a href="/profile/" class="{% block nav_profile %}{% endblock %}">
+        {% if request.user.is_authenticated %}
+          {{ request.user.name|default:request.user.username }}
+        {% else %}
+          Profile
+        {% endif %}
+      </a>
+      {% if request.user.is_authenticated %}
+        <a href="/report/" class="btn-report {% block nav_report %}{% endblock %}">+ Report</a>
+      {% else %}
+        <a href="/login/" class="btn-report">Sign in</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <div class="page fade-up">
+    {% if messages %}
+      <div class="messages">
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </div>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

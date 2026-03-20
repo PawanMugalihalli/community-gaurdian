@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+{% block title %}Report Incident — Community Guardian{% endblock %}
+{% block nav_report %}active{% endblock %}
+
+{% block extra_head %}
+<style>
+  .report-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 680px) {
+    .report-layout { grid-template-columns: 1fr; }
+    .report-sidebar { order: -1; }
+  }
+
+  .report-form-card { padding: 1.75rem; }
+
+  .report-form-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  .report-sidebar { display: flex; flex-direction: column; gap: 1rem; }
+
+  .info-card {
+    padding: 1.25rem 1.4rem;
+  }
+
+  .info-card h3 {
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: .75rem;
+  }
+
+  .info-card p {
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    font-weight: 300;
+  }
+
+  .info-card ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin-top: .5rem;
+  }
+
+  .info-card ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: .6rem;
+    font-size: .875rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  .info-card ul li .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: .38rem;
+  }
+
+  /* example incidents */
+  .examples-list { display: flex; flex-direction: column; gap: .5rem; }
+
+  .example-item {
+    padding: .6rem .75rem;
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: border-color .15s;
+  }
+
+  .example-item:hover { border-color: var(--accent); }
+
+  .example-item .ex-title {
+    font-size: .84rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: .15rem;
+  }
+
+  .example-item .ex-desc {
+    font-size: .78rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+  }
+
+  /* char counter */
+  .field-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: .3rem;
+  }
+
+  .char-count {
+    font-size: .78rem;
+    color: var(--text-muted);
+  }
+
+  /* processing note */
+  .processing-note {
+    display: flex;
+    gap: .6rem;
+    align-items: flex-start;
+    padding: .85rem 1rem;
+    border-radius: var(--radius-sm);
+    background: var(--green-bg);
+    border: 1px solid #BBF7D0;
+    font-size: .875rem;
+    color: var(--green);
+    margin-top: 1.25rem;
+  }
+
+  .processing-note .note-icon { flex-shrink: 0; font-size: 1rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Report an Incident</h1>
+  <p>Submit a safety concern. Our AI will categorise and summarise it within 5 minutes.</p>
+</div>
+
+<div class="report-layout">
+
+  <!-- LEFT: Form -->
+  <div class="card report-form-card">
+    <h2>Incident details</h2>
+    <form method="POST" action="/report/">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="title">Title <span style="color:var(--red)">*</span></label>
+        <input type="text" id="title" name="title" maxlength="255"
+               placeholder="Brief summary of the incident"
+               value="{{ form_data.title|default:'' }}"
+               oninput="updateCharCount(this, 'titleCount', 255)" required />
+        <div class="field-footer">
+          <span class="text-muted" style="font-size:.78rem;">Keep it short and factual</span>
+          <span class="char-count" id="titleCount">0 / 255</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description <span style="color:var(--red)">*</span></label>
+        <textarea id="description" name="description"
+                  placeholder="Describe what happened, when, and any relevant details…"
+                  oninput="updateCharCount(this, 'descCount', 1000)"
+                  required>{{ form_data.description|default:'' }}</textarea>
+        <div class="field-footer">
+          <span class="text-muted" style="font-size:.78rem;">The more context, the better the AI categorisation</span>
+          <span class="char-count" id="descCount">0 / 1000</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location <span style="color:var(--red)">*</span></label>
+        <input type="text" id="location" name="location"
+               placeholder="Neighbourhood, area, or street"
+               value="{{ form_data.location|default:profile_location }}"
+               required />
+      </div>
+
+      <div class="form-group">
+        <label for="source">Source</label>
+        <select id="source" name="source">
+          <option value="user_report" {% if form_data.source == 'user_report' or not form_data.source %}selected{% endif %}>My own observation</option>
+          <option value="social_media" {% if form_data.source == 'social_media' %}selected{% endif %}>Social media</option>
+          <option value="news"         {% if form_data.source == 'news'         %}selected{% endif %}>News article</option>
+        </select>
+      </div>
+
+      <div class="processing-note">
+        <span class="note-icon">⚙️</span>
+        <span>This incident will be queued for AI enrichment. Category, severity, and action steps will be filled in within the next batch run (every 5 minutes). It will appear in the feed once processed.</span>
+      </div>
+
+      <div class="flex gap-2" style="margin-top:1.5rem;">
+        <button type="submit" class="btn btn-primary">Submit incident</button>
+        <a href="{% url 'feed' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- RIGHT: Sidebar -->
+  <div class="report-sidebar">
+
+    <div class="card info-card">
+      <h3>Try an example</h3>
+      <div class="examples-list">
+        <div class="example-item"
+             onclick="fillExample('Phishing SMS received', 'Received a suspicious OTP message from an unknown number asking for bank details and card information.')">
+          <div class="ex-title">📱 Phishing SMS</div>
+          <div class="ex-desc">Suspicious OTP request from unknown number</div>
+        </div>
+        <div class="example-item"
+             onclick="fillExample('Suspicious person near parking', 'A person was seen checking car door handles in the apartment complex parking lot late at night.')">
+          <div class="ex-title">🚗 Suspicious activity</div>
+          <div class="ex-desc">Checking car doors in parking at night</div>
+        </div>
+        <div class="example-item"
+             onclick="fillExample('Heavy waterlogging near underpass', 'Severe waterlogging near the underpass after heavy rainfall. Water level is knee deep, vehicles are getting stuck.')">
+          <div class="ex-title">🌧 Waterlogging</div>
+          <div class="ex-desc">Knee-deep water near underpass</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card info-card">
+      <h3>What happens next</h3>
+      <ul>
+        <li><span class="dot"></span> Incident is saved immediately</li>
+        <li><span class="dot"></span> AI batch job picks it up within 5 minutes</li>
+        <li><span class="dot"></span> Category, severity and action steps are filled in</li>
+        <li><span class="dot"></span> Noise is filtered out — only real incidents appear in the feed</li>
+        <li><span class="dot"></span> If AI is unavailable, rule-based fallback runs automatically</li>
+      </ul>
+    </div>
+
+    <div class="card info-card">
+      <h3>Reporting guidelines</h3>
+      <p>Please report factual safety concerns only. Avoid venting, personal disputes, or traffic complaints — these will be filtered as noise by the AI.</p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function updateCharCount(el, countId, max) {
+    document.getElementById(countId).textContent = el.value.length + ' / ' + max;
+  }
+
+  // initialise counts on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    const title = document.getElementById('title');
+    const desc  = document.getElementById('description');
+    if (title.value) updateCharCount(title, 'titleCount', 255);
+    if (desc.value)  updateCharCount(desc,  'descCount', 1000);
+  });
+
+  function fillExample(title, description) {
+    document.getElementById('title').value       = title;
+    document.getElementById('description').value = description;
+    updateCharCount(document.getElementById('title'),       'titleCount', 255);
+    updateCharCount(document.getElementById('description'), 'descCount', 1000);
+    document.getElementById('title').focus();
+  }
+</script>
+{% endblock %}
