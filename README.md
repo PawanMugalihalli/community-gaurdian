@@ -78,30 +78,6 @@ docker-compose exec backend python manage.py test incidents.tests
 ## Architecture
 
 ### Data Flow
-```mermaid
-flowchart TD
-    A[POST /api/incidents/] --> B[Save incident (ai_enriched = False)]
-
-    B --> C[APScheduler Trigger (every 5 min)]
-
-    C --> D[Fetch incidents where ai_enriched = False]
-
-    D --> E[Split incidents into chunks]
-
-    E --> F[Send chunk to Groq API]
-
-    F -->|Success| G[AI Enrichment]
-    F -->|Failure| H[Keyword Fallback]
-
-    G --> I[Update DB with enrichment]
-    H --> I
-
-    I --> J[Mark ai_enriched = True]
-
-    J --> K[Move to next chunk]
-
-    K -->|Repeat until done| L[End
-```
 Write path:
   POST /api/incidents/ → saved raw immediately (unenriched)
   APScheduler (every 5 min) → queries ai_enriched=False
