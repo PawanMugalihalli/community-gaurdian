@@ -1,4 +1,3 @@
-import logging
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -6,51 +5,38 @@ from rest_framework.viewsets import ViewSet
 from incidents.serializers import IncidentSerializer
 from incidents.services.incident_service import IncidentService
 from incidents.services.profile_service import UserProfileService
-from incidents.views.digest_service import DigestService
-
-
-logger = logging.getLogger(__name__)
+from incidents.views.api_exceptions import handle_exceptions
+from incidents.services.digest_service import DigestService
 
 
 class IncidentViewSet(ViewSet):
 
+    @handle_exceptions
     def list(self, request):
         profile_id = request.query_params.get('profile_id')
-        location   = request.query_params.get('location')
-        category   = request.query_params.get('category')
-        severity   = request.query_params.get('severity')
-        search     = request.query_params.get('search')
+        location_param = request.query_params.get('location')
+        category = request.query_params.get('category')
+        severity = request.query_params.get('severity')
+        search = request.query_params.get('search')
 
-        try:
-            profile  = self._resolve_profile(profile_id)
-            location = self._resolve_location(location, profile)
-            concerns = self._resolve_concerns(category, profile)
+        profile = self._resolve_profile(profile_id)
+        location = self._resolve_location(location_param, profile)
+        concerns = self._resolve_concerns(category, profile)
 
-            incidents = IncidentService.get_incidents(
-                location=location,
-                category=category,
-                severity=int(severity) if severity else None,
-                search=search,
-                concerns=concerns,
-            )
+        incidents = IncidentService.get_incidents(
+            location=location,
+            category=category,
+            severity=int(severity) if severity else None,
+            search=search,
+            concerns=concerns,
+        )
 
-            self._log_if_profile(profile, incidents)
+        self._log_if_profile(profile, incidents)
 
-            serializer = IncidentSerializer(incidents, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = IncidentSerializer(incidents, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except ValueError as e:
-            return Response(
-                {'error': str(e)},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Exception as e:
-            logger.error(f"Error listing incidents: {e}")
-            return Response(
-                {'error': 'Failed to retrieve incidents.'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
+    @handle_exceptions
     def create(self, request):
         serializer = IncidentSerializer(data=request.data)
 
@@ -60,59 +46,27 @@ class IncidentViewSet(ViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        try:
-            incident = IncidentService.create(serializer.validated_data)
-            return Response(
-                IncidentSerializer(incident).data,
-                status=status.HTTP_201_CREATED,
-            )
+        incident = IncidentService.create(serializer.validated_data)
+        return Response(
+            IncidentSerializer(incident).data,
+            status=status.HTTP_201_CREATED,
+        )
 
-        except Exception as e:
-            logger.error(f"Error creating incident: {e}")
-            return Response(
-                {'error': 'Failed to create incident.'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
+    @handle_exceptions
     def retrieve(self, request, pk=None):
-        try:
-            incident = IncidentService.get_by_id(pk)
-            return Response(
-                IncidentSerializer(incident).data,
-                status=status.HTTP_200_OK,
-            )
+        incident = IncidentService.get_by_id(pk)
+        return Response(
+            IncidentSerializer(incident).data,
+            status=status.HTTP_200_OK,
+        )
 
-        except ValueError as e:
-            return Response(
-                {'error': str(e)},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Exception as e:
-            logger.error(f"Error retrieving incident {pk}: {e}")
-            return Response(
-                {'error': 'Failed to retrieve incident.'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
+    @handle_exceptions
     def partial_update(self, request, pk=None):
-        try:
-            incident = IncidentService.update(pk, request.data)
-            return Response(
-                IncidentSerializer(incident).data,
-                status=status.HTTP_200_OK,
-            )
-
-        except ValueError as e:
-            return Response(
-                {'error': str(e)},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Exception as e:
-            logger.error(f"Error updating incident {pk}: {e}")
-            return Response(
-                {'error': 'Failed to update incident.'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        incident = IncidentService.update(pk, request.data)
+        return Response(
+            IncidentSerializer(incident).data,
+            status=status.HTTP_200_OK,
+        )
 
     def _resolve_profile(self, profile_id):
         return UserProfileService.get_by_id(profile_id) if profile_id else None

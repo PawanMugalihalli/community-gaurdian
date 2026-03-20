@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
 from incidents.ui_views import feed_view, profile_view, report_view
-from incidents.auth_views import signup_view, login_view, logout_view
+from incidents.views.auth_views import signup_view, login_view, logout_view
 
 urlpatterns = [
     path('admin/',   admin.site.urls),

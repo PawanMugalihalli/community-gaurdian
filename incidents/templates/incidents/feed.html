@@ -509,26 +509,6 @@
   };
 
   applyMode(false);
-
-  // Auto-submit public filters on select change / search input
-  var form = publicForm;
-  form.querySelectorAll('select').forEach(function (sel) {
-    sel.addEventListener('change', function () { form.submit(); });
-  });
-
-  var searchTimer;
-  var searchInput = form.querySelector('input[name="search"]');
-  if (searchInput) {
-    searchInput.addEventListener('input', function () {
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(function () { form.submit(); }, 450);
-    });
-  }
-
-  var locInput = form.querySelector('input[name="location"]');
-  if (locInput) {
-    locInput.addEventListener('change', function () { form.submit(); });
-  }
 })();
 </script>
 {% endblock %}

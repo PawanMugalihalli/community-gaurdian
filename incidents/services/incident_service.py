@@ -45,7 +45,7 @@ class IncidentService:
         search=None,
         concerns=None,
     ):
-        qs = Incident.objects.filter(is_enriched=True, is_noise=False)
+        qs = Incident.objects.filter(is_noise=False)
         qs = IncidentService._apply_location(qs, location)
         qs = IncidentService._apply_category(qs, category, concerns)
         qs = IncidentService._apply_severity(qs, severity)
