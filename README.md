@@ -89,7 +89,6 @@ Write path:
 Read path:
   GET /api/incidents/ → pure DB query (is_noise=False)
   No AI on the read path — always fast, always available
-```
 
 AI runs at **write time**, not read time. This means the feed is always a pure database read — it works even when the AI service is completely down.
 
