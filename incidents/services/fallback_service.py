@@ -1,51 +1,14 @@
+from incidents.fallback_constants import (
+    ACTION_MAP,
+    DIGITAL_KEYWORDS,
+    NOISE_KEYWORDS,
+    PHYSICAL_KEYWORDS,
+    SEVERITY_MAP,
+    WEATHER_KEYWORDS,
+)
+
+
 class FallbackService:
-
-    NOISE_KEYWORDS = [
-        'ugh', 'so annoying', "can't believe", 'why is everyone',
-        'terrible', 'worst', 'hate this', 'so frustrated',
-        'unbelievable', 'ridiculous', 'complain', 'rant',
-    ]
-
-    DIGITAL_KEYWORDS = [
-        'phishing', 'scam', 'otp', 'fraud', 'suspicious email',
-        'breach', 'hack', 'malware', 'virus', 'password',
-        'bank details', 'credit card', 'identity theft',
-        'suspicious link', 'fake website', 'ransomware',
-    ]
-
-    PHYSICAL_KEYWORDS = [
-        'theft', 'accident', 'fire', 'break-in', 'suspicious person',
-        'robbery', 'assault', 'vandalism', 'burglary', 'shooting',
-        'fight', 'weapon', 'injury', 'ambulance', 'police',
-        'missing', 'flood', 'explosion', 'gas leak',
-    ]
-
-    WEATHER_KEYWORDS = [
-        'storm', 'flood', 'earthquake', 'lightning', 'tornado',
-        'heavy rain', 'cyclone', 'tsunami', 'landslide', 'drought',
-        'heatwave', 'snowfall', 'hail', 'thunder',
-    ]
-
-    SEVERITY_MAP = {
-        'physical': 3,
-        'digital': 3,
-        'weather': 2,
-    }
-
-    ACTION_MAP = {
-        'physical': (
-            "Stay alert and avoid the area if possible. "
-            "Report to local authorities if the situation persists."
-        ),
-        'digital': (
-            "Do not click any suspicious links. "
-            "Change your passwords and enable two-factor authentication immediately."
-        ),
-        'weather': (
-            "Stay indoors and follow local weather advisories. "
-            "Keep emergency contacts handy."
-        ),
-    }
 
     @staticmethod
     def analyze(incidents: list) -> dict:
@@ -71,22 +34,22 @@ class FallbackService:
                 'id': incident.id,
                 'is_noise': False,
                 'category': category,
-                'severity': FallbackService.SEVERITY_MAP.get(category, 2),
-                'action_steps': FallbackService.ACTION_MAP.get(category, ''),
+                'severity': SEVERITY_MAP.get(category, 2),
+                'action_steps': ACTION_MAP.get(category, ''),
             })
 
         return {'results': results}
 
     @staticmethod
     def _is_noise(text: str) -> bool:
-        return any(keyword in text for keyword in FallbackService.NOISE_KEYWORDS)
+        return any(keyword in text for keyword in NOISE_KEYWORDS)
 
     @staticmethod
     def _get_category(text: str) -> str:
-        if any(keyword in text for keyword in FallbackService.DIGITAL_KEYWORDS):
+        if any(keyword in text for keyword in DIGITAL_KEYWORDS):
             return 'digital'
-        if any(keyword in text for keyword in FallbackService.WEATHER_KEYWORDS):
+        if any(keyword in text for keyword in WEATHER_KEYWORDS):
             return 'weather'
-        if any(keyword in text for keyword in FallbackService.PHYSICAL_KEYWORDS):
+        if any(keyword in text for keyword in PHYSICAL_KEYWORDS):
             return 'physical'
         return 'physical'
