@@ -21,7 +21,7 @@ The core problem: people are overwhelmed by safety information scattered across 
 
 | Layer | Choice | Why |
 |---|---|---|
-| Backend | Django + DRF | Requirement; solid ORM, batteries included |
+| Backend | Django + DRF | Solid ORM, APScheduler included |
 | AI | Groq llama-3.1-8b-instant | Free tier, no credit card, fast JSON output |
 | Fallback | Keyword matching (pure Python) | Zero dependencies, never fails |
 | Scheduler | APScheduler | Runs inside Django, no extra infrastructure |
