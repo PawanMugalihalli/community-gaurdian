@@ -78,6 +78,7 @@ docker-compose exec backend python manage.py test incidents.tests
 ## Architecture
 
 ### Data Flow
+```mermaid
 flowchart TD
     A[POST /api/incidents/] --> B[Save incident (ai_enriched = False)]
 
@@ -99,8 +100,7 @@ flowchart TD
 
     J --> K[Move to next chunk]
 
-    K -->|Repeat until done| L[End]
-
+    K -->|Repeat until done| L[End
 ```
 Write path:
   POST /api/incidents/ → saved raw immediately (unenriched)
