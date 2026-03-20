@@ -7,6 +7,8 @@
 **AI tools used:** Claude (architecture design, code review), Groq llama-3.1-8b-instant (runtime AI enrichment)
 
 ---
+***Video Demo Link: *** https://youtu.be/CqWhsqtC5Ps
+---
 
 ## What It Does
 
