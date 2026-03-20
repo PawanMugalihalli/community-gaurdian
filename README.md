@@ -1,13 +1,64 @@
 # Community Guardian
 
-**Candidate:** Pawan Mugalihalli  
-**Role:** New Grad SWE, Palo Alto Networks   
-**Time Spent:** 6 hours  
-**Option chosen:** Option 3. Community Safety & Digital Wellness  
-**AI tools used:** Groq llama-3.1-8b-instant (runtime AI enrichment)
+| | |
+|---|---|
+| **Candidate** | Pawan Mugalihalli |
+| **Role** | New Grad SWE — Palo Alto Networks Take-Home |
+| **Time Spent** | 6 hours |
+| **Option** | Option 3 — Community Safety & Digital Wellness |
+| **AI tools used** | Claude (architecture design, code review), Groq llama-3.1-8b-instant (runtime AI enrichment) |
 
 ---
-***Video Demo Link: *** https://youtu.be/CqWhsqtC5Ps
+
+**Video Demo:** https://youtu.be/CqWhsqtC5Ps
+
+---
+
+## Submission Details
+
+### AI Disclosure
+
+**Did you use an AI assistant?** Yes — Claude (Anthropic) for architecture design and code review. Groq llama-3.1-8b-instant is used as the runtime AI feature inside the app itself.
+
+**How did you verify the suggestions?**
+Every architectural decision was discussed and reasoned through before implementation — not accepted blindly. I questioned and revised several design choices during the process (e.g. whether AI should run at read time or write time, single model vs separate UserProfile, APScheduler vs Celery). Code suggestions were reviewed for correctness, tested manually via curl and the UI, and covered by the test suite.
+
+**One example of a suggestion I rejected or changed:**
+Two examples worth noting.
+
+First — the initial design ran AI enrichment on every digest request. Every time a user loaded their feed, Groq was called. I rejected this because it made the read path dependent on AI availability and added latency to every page load. I redesigned it so AI runs at write time in a background batch job, making the feed a pure DB query. This was a deliberate systems design decision, not a copy-paste.
+
+Second — the initial design had two separate endpoints: `/api/incidents/` for the public feed and `/api/digest/` for the personalised feed. I rejected this because the separation was artificial — both endpoints returned the same data shape with only filtering logic different. I merged them into a single `/api/incidents/` endpoint where passing `?profile_id=` activates personalised mode. This kept the API surface clean and avoided maintaining two endpoints that did essentially the same thing.
+
+### Tradeoffs & Prioritization
+
+**What I cut to stay within the time limit:**
+- Safe Circles (encrypted status sharing with trusted contacts) — designed but not implemented
+- Real-time notifications — out of scope for a prototype
+- Distance-based location filtering — used case-insensitive string match instead, hardcoded location dropdowns in UI prevent mismatches
+- Re-enrichment UI — the retry logic exists in the backend but there's no admin interface to trigger or monitor it
+
+**What I'd build next with more time:**
+- Safe Circles — trusted contact groups with Fernet-encrypted status updates during emergencies
+- Celery + Redis for async enrichment so incident creation feels instant rather than queued
+- Push notifications when high-severity incidents appear near the user
+- Explicit deduplication surface in the UI — Groq already spots related reports in a batch, surface this as "3 reports of the same incident"
+- Admin panel to review and correct noise classifications
+- Data retention policy for DigestLog
+
+**Known limitations:**
+- Happy path tests make real Groq API calls — in CI/CD these should be mocked to avoid quota dependency
+- APScheduler runs inside the Django process — in production this should be Celery so the enrichment job doesn't compete with web requests for resources
+- The Groq free tier has rate limits — if quota is exceeded the fallback runs automatically, but AI enrichment will not retry until quota resets
+- Location matching is string-based — handled by hardcoding location dropdowns in the UI to prevent mismatches
+
+**Key tradeoffs made:**
+- **APScheduler vs Celery** — APScheduler runs inside Django with zero extra infrastructure. Celery would give better reliability and horizontal scaling in production but requires Redis and a separate worker process, which adds setup complexity for a take-home evaluation
+- **AI at write time vs read time** — running enrichment in a background job means the feed is always a pure DB query. Tradeoff is that very new incidents appear without category or action steps until the next batch run (up to 5 minutes)
+- **Single User model via AbstractUser** — eliminates a join on every feed request. Tradeoff is tighter coupling between auth and app data
+- **Single `/api/incidents/` endpoint** — merged the public and personalised feeds into one endpoint with an optional `?profile_id=` param. Tradeoff is slightly more logic in one place, but avoids maintaining two endpoints that return the same data shape
+- **PostgreSQL over SQLite** — better concurrent write support and composite index performance. Tradeoff is slightly more setup, handled entirely by Docker Compose
+
 ---
 
 ## What It Does
@@ -17,17 +68,18 @@ Community Guardian is a safety digest platform that takes raw incident reports, 
 The core problem: people are overwhelmed by safety information scattered across news and social media — either too much noise or no context on what to do. This app gives a single, curated view.
 
 ---
-### Tech Stack
+
+## Tech Stack
 
 | Layer | Choice | Why |
 |---|---|---|
-| Backend | Django + DRF | Solid ORM, APScheduler included |
+| Backend | Django + DRF | Solid ORM, batteries included |
 | AI | Groq llama-3.1-8b-instant | Free tier, no credit card, fast JSON output |
 | Fallback | Keyword matching (pure Python) | Zero dependencies, never fails |
 | Scheduler | APScheduler | Runs inside Django, no extra infrastructure |
 | Database | PostgreSQL | Better concurrent writes and index support vs SQLite |
 | Auth | Django AbstractUser | Single model — name, location, concerns live directly on User |
-| Frontend | Django templates + vanilla JS | Backend-heavy project, no framework needed |  
+| Frontend | Django templates + vanilla JS | Backend-heavy project, no framework needed |
 
 ---
 
@@ -65,7 +117,7 @@ docker-compose up --build -d
 # 4. Run migrations
 docker-compose exec backend python manage.py migrate
 
-# 5. Load the synthetic dataset (15 fake incidents, no real data)
+# 5. Load the synthetic dataset (50 fake incidents, no real data)
 docker-compose exec backend python manage.py load_sample_data
 
 # 6. Trigger the enrichment batch job manually
@@ -94,61 +146,63 @@ docker-compose exec backend python manage.py test incidents.tests
 ## Architecture
 
 ### Data Flow
+
+```
 Write path:
-  POST /api/incidents/ → saved raw immediately (unenriched)  
-  APScheduler (every 5 min) → queries ai_enriched=False  
-  → splits into chunks → sends each chunk to Groq together  
-  → if Groq fails on a chunk → keyword fallback runs for that chunk  
-  → writes enrichment back (category, severity, is_noise, action_steps)  
-  → continues to next chunk regardless  
+  POST /api/incidents/ → saved raw immediately (unenriched)
+  APScheduler (every 5 min) → queries ai_enriched=False
+  → splits into chunks → sends each chunk to Groq together
+  → if Groq fails on a chunk → keyword fallback runs for that chunk
+  → writes enrichment back (category, severity, is_noise, action_steps)
+  → continues to next chunk regardless
 
 Read path:
   GET /api/incidents/ → pure DB query (is_noise=False)
   No AI on the read path — always fast, always available
+```
 
 AI runs at **write time**, not read time. This means the feed is always a pure database read — it works even when the AI service is completely down.
 
 Batching incidents together (not one by one) lets Groq spot duplicate reports of the same event across the batch — something per-incident processing cannot do.
 
-
 ### Folder Structure
 
 ```
 community-guardian/
-├── config/                      # Django project settings and URLs
+├── config/                       # Django project settings and URLs
 ├── incidents/
 │   ├── models/
-│   │   ├── user.py              # AbstractUser + name, location, concerns
-│   │   ├── incident.py          # Raw + enriched fields + is_enriched, ai_enriched, is_noise flags
-│   │   └── digest_log.py        # Logs every personalised feed request
+│   │   ├── user.py               # AbstractUser + name, location, concerns
+│   │   ├── incident.py           # Raw + enriched fields + is_enriched, ai_enriched, is_noise flags
+│   │   └── digest_log.py         # Logs every personalised feed request
 │   ├── services/
-│   │   ├── incident_service.py  # CRUD + composable filter methods
+│   │   ├── incident_service.py   # CRUD + composable filter methods
 │   │   ├── enrichment_service.py # Orchestrates batch enrichment (AI vs fallback per chunk)
-│   │   ├── groq_service.py      # Groq API call + JSON parsing
-│   │   ├── fallback_service.py  # Keyword-based categorisation
-│   │   ├── digest_service.py    # DigestLog write
-│   │   └── profile_service.py   # User profile CRUD + concern validation
+│   │   ├── groq_service.py       # Groq API call + JSON parsing
+│   │   ├── fallback_service.py   # Keyword-based categorisation
+│   │   ├── digest_service.py     # DigestLog write
+│   │   └── profile_service.py    # User profile CRUD + concern validation
 │   ├── views/
-│   │   ├── __init__.py          # Exports IncidentViewSet, UserProfileViewSet
-│   │   ├── incident_views.py    # List, create, retrieve, partial_update
-│   │   ├── profile_views.py     # Create, retrieve, partial_update
-│   │   └── api_exceptions.py    # @handle_exceptions decorator — maps ValueError to 404/400
-│   ├── ui_views.py              # Django template views (feed, profile, report)
-│   ├── auth_views.py            # Login, signup, logout
-│   ├── scheduler.py             # APScheduler — starts enrichment job on Django startup
+│   │   ├── __init__.py           # Exports IncidentViewSet, UserProfileViewSet
+│   │   ├── incident_views.py     # List, create, retrieve, partial_update
+│   │   ├── profile_views.py      # Create, retrieve, partial_update
+│   │   └── api_exceptions.py     # @handle_exceptions decorator — maps ValueError to 404/400
+│   ├── ui_views.py               # Django template views (feed, profile, report)
+│   ├── auth_views.py             # Login, signup, logout
+│   ├── scheduler.py              # APScheduler — starts enrichment job on Django startup
 │   └── tests/
 │       ├── test_happy_path.py
 │       └── test_edge_cases.py
 ├── templates/
-│   ├── base.html                # Shared nav, CSS variables, fonts
+│   ├── base.html                 # Shared nav, CSS variables, fonts
 │   └── incidents/
-│       ├── feed.html            # Safety feed with public/personalised toggle
-│       ├── profile.html         # View + edit profile
-│       ├── report.html          # Submit incident form
+│       ├── feed.html             # Safety feed with public/personalised toggle
+│       ├── profile.html          # View + edit profile
+│       ├── report.html           # Submit incident form
 │       ├── login.html
 │       └── signup.html
 ├── data/
-│   └── incidents_sample.json    # 15 synthetic incidents (committed, no real data)
+│   └── incidents_sample.json     # 50 synthetic incidents (committed, no real data)
 ├── docker-compose.yml
 ├── Dockerfile
 └── .env.example
@@ -221,7 +275,7 @@ All view methods are wrapped with `@handle_exceptions` (defined in `views/api_ex
 |---|---|
 | `/login/` | Sign in with username + password |
 | `/signup/` | Create account — sets username, password, name, location, and concern categories in one form |
-| `/incidents/` | Safety feed — toggle between public (all incidents + manual filters) and personalised (profile defaults) |
+| `/` | Safety feed — toggle between public (all incidents + manual filters) and personalised (profile defaults) |
 | `/profile/` | View profile (read-only) with inline edit mode toggle |
 | `/report/` | Submit a new incident with example click-to-fill buttons |
 
@@ -249,36 +303,14 @@ Note: happy path tests make real Groq API calls. In CI/CD these should be mocked
 
 ## Synthetic Dataset
 
-`data/incidents_sample.json` contains 15 fake incidents across 5 Bangalore neighbourhoods:
-- Digital scams — phishing SMS, ATM skimming, data breaches, fraud calls
-- Physical safety — theft, suspicious persons, chain snatching, gas leak
-- Weather — waterlogging, thunderstorm warnings
+`data/incidents_sample.json` contains 50 fake incidents across 3 Bangalore neighbourhoods (Koramangala, HSR Layout, Whitefield):
+- Digital scams — phishing SMS, ATM skimming, data breaches, fraud calls, UPI fraud, vishing
+- Physical safety — theft, suspicious persons, chain snatching, gas leak, fire, drunk driver
+- Weather — waterlogging, thunderstorm warnings, flash floods, heatwave advisory
 - Intentional noise — venting and complaints to demonstrate filtering
 - Intentional duplicates — to demonstrate batch-level deduplication by the model
 
 Load with: `python manage.py load_sample_data` (safe to re-run — uses `get_or_create`)
-
----
-
-## Tradeoffs & What I'd Build Next
-
-**APScheduler vs Celery**: Used APScheduler (runs inside Django, zero extra infrastructure) instead of Celery + Redis. For production with high incident volume, Celery would give better reliability, retries, and horizontal scaling. The enrichment code is already structured as a plain function that would map directly to a Celery task with no refactoring.
-
-**PostgreSQL over SQLite**: Chose PostgreSQL for concurrent write support and composite index performance (`is_noise`, `location`, `ai_enriched`). Tradeoff is slightly more setup — handled entirely by Docker Compose so the evaluator experience is a single command.
-
-**Single User model via AbstractUser**: Extended `AbstractUser` directly with `name`, `location`, `concerns`. Eliminates the join overhead of a separate `UserProfile` table on every feed request. Tradeoff is tighter coupling between auth and app data — a larger team might prefer separation for cleaner ownership.
-
-**Feed shows all non-noise incidents**: The feed filters only on `is_noise=False`, not `is_enriched=True`. This means incidents appear immediately on submission and gain enrichment detail progressively. Tradeoff is that very new incidents show without a category or action step until the next batch run.
-
-**Re-enrichment by design**: The `ai_enriched` flag ensures fallback incidents are automatically retried when Groq recovers. No manual queue management needed.
-
-**What I'd build next**:
-- Push notifications when high-severity incidents appear near the user
-- Celery + Redis for async enrichment so incident creation feels instant
-- Explicit deduplication surface in the UI — Groq already spots related reports in a batch, surface this as "3 reports of the same incident"
-- Distance-based location filtering instead of case-insensitive string match
-- Admin panel to review and correct noise classifications
-- Data retention policy for DigestLog
 
 ---
 
