@@ -17,6 +17,19 @@ Community Guardian is a safety digest platform that takes raw incident reports, 
 The core problem: people are overwhelmed by safety information scattered across news and social media — either too much noise or no context on what to do. This app gives a single, curated view.
 
 ---
+### Tech Stack
+
+| Layer | Choice | Why |
+|---|---|---|
+| Backend | Django + DRF | Requirement; solid ORM, batteries included |
+| AI | Groq llama-3.1-8b-instant | Free tier, no credit card, fast JSON output |
+| Fallback | Keyword matching (pure Python) | Zero dependencies, never fails |
+| Scheduler | APScheduler | Runs inside Django, no extra infrastructure |
+| Database | PostgreSQL | Better concurrent writes and index support vs SQLite |
+| Auth | Django AbstractUser | Single model — name, location, concerns live directly on User |
+| Frontend | Django templates + vanilla JS | Backend-heavy project, no framework needed |  
+
+---
 
 ## Quick Start
 
@@ -97,17 +110,6 @@ AI runs at **write time**, not read time. This means the feed is always a pure d
 
 Batching incidents together (not one by one) lets Groq spot duplicate reports of the same event across the batch — something per-incident processing cannot do.
 
-### Tech Stack
-
-| Layer | Choice | Why |
-|---|---|---|
-| Backend | Django + DRF | Requirement; solid ORM, batteries included |
-| AI | Groq llama-3.1-8b-instant | Free tier, no credit card, fast JSON output |
-| Fallback | Keyword matching (pure Python) | Zero dependencies, never fails |
-| Scheduler | APScheduler | Runs inside Django, no extra infrastructure |
-| Database | PostgreSQL | Better concurrent writes and index support vs SQLite |
-| Auth | Django AbstractUser | Single model — name, location, concerns live directly on User |
-| Frontend | Django templates + vanilla JS | Backend-heavy project, no framework needed |
 
 ### Folder Structure
 
