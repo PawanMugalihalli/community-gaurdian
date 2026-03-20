@@ -216,7 +216,7 @@ All view methods are wrapped with `@handle_exceptions` (defined in `views/api_ex
 |---|---|
 | `/login/` | Sign in with username + password |
 | `/signup/` | Create account — sets username, password, name, location, and concern categories in one form |
-| `/` | Safety feed — toggle between public (all incidents + manual filters) and personalised (profile defaults) |
+| `/incidents/` | Safety feed — toggle between public (all incidents + manual filters) and personalised (profile defaults) |
 | `/profile/` | View profile (read-only) with inline edit mode toggle |
 | `/report/` | Submit a new incident with example click-to-fill buttons |
 
