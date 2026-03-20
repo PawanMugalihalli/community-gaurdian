@@ -3,7 +3,7 @@
 **Candidate:** Pawan Mugalihalli  
 **Role:** New Grad SWE, Palo Alto Networks   
 **Time Spent:** 6 hours  
-**Option chosen:** Option 3 — Community Safety & Digital Wellness  
+**Option chosen:** Option 3. Community Safety & Digital Wellness  
 **AI tools used:** Claude (architecture design, code review), Groq llama-3.1-8b-instant (runtime AI enrichment)
 
 ---
