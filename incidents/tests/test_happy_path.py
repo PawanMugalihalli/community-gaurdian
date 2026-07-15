@@ -17,28 +17,28 @@ class HappyPathTest(TestCase):
         Incident.objects.create(
             title="Phishing SMS received",
             description="Got a suspicious OTP text from an unknown number asking for bank details.",
-            location="Koramangala",
+            location="Bangalore",
         )
         Incident.objects.create(
             title="Suspicious person near parking",
             description="A person was seen checking car doors in the apartment parking lot at 2am.",
-            location="Koramangala",
+            location="Bangalore",
         )
         Incident.objects.create(
             title="Heavy waterlogging near underpass",
             description="Severe waterlogging reported near the underpass after heavy rainfall.",
-            location="Koramangala",
+            location="Bangalore",
         )
         # 2 noise incidents
         Incident.objects.create(
             title="Ugh traffic is so bad today",
             description="Can't believe how terrible the traffic is. So frustrated with this city.",
-            location="Koramangala",
+            location="Bangalore",
         )
         Incident.objects.create(
             title="This neighbourhood is the worst",
             description="I hate how noisy this place is. The neighbours are so annoying and inconsiderate.",
-            location="Koramangala",
+            location="Bangalore",
         )
 
     def test_enrichment_filters_noise_and_enriches_real_incidents(self):
@@ -55,7 +55,7 @@ class HappyPathTest(TestCase):
         feed_incidents = Incident.objects.filter(
             is_enriched=True,
             is_noise=False,
-            location__icontains="Koramangala",
+            location__icontains="Bangalore",
         )
         noise_incidents = Incident.objects.filter(
             is_enriched=True,
@@ -92,7 +92,7 @@ class HappyPathTest(TestCase):
     def test_feed_api_returns_only_enriched_non_noise(self):
         EnrichmentService.enrich_pending()
 
-        response = self.client.get("/api/incidents/?location=Koramangala")
+        response = self.client.get("/api/incidents/?location=Bangalore")
         self.assertEqual(response.status_code, 200)
 
         data = response.json()

@@ -4,6 +4,7 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib import messages
 from django.db import transaction
+from incidents.ingestion.cities import CITIES
 
 User = get_user_model()
 logger = logging.getLogger(__name__)
@@ -47,6 +48,7 @@ def signup_view(request):
             return render(request, 'signup.html', {
                 'form_data': request.POST,
                 'selected_concerns': concerns,
+                'report_areas': sorted(CITIES.keys()),
             })
 
         try:
@@ -69,6 +71,7 @@ def signup_view(request):
     return render(request, 'signup.html', {
         'form_data': {},
         'selected_concerns': [],
+        'report_areas': sorted(CITIES.keys()),
     })
 
 

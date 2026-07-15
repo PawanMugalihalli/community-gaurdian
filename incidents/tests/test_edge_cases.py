@@ -15,17 +15,17 @@ class EdgeCaseTest(TestCase):
         Incident.objects.create(
             title="Phishing SMS received",
             description="Got a suspicious OTP text asking for bank details and card info.",
-            location="Koramangala",
+            location="Bangalore",
         )
         Incident.objects.create(
             title="Suspicious person near parking",
             description="A person was seen checking car doors in the apartment parking lot at midnight.",
-            location="Indiranagar",
+            location="Bangalore",
         )
         Incident.objects.create(
             title="Ugh traffic is terrible today",
             description="Can't believe how bad the traffic is. So annoying and frustrating.",
-            location="HSR Layout",
+            location="Bangalore",
         )
 
     @patch("incidents.services.enrichment_service.GroqService.analyze")

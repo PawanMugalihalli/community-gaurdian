@@ -367,9 +367,9 @@
       <label>Location</label>
       <select name="location">
         <option value="">All locations</option>
-        <option value="Koramangala" {% if request.GET.location == 'Koramangala' %}selected{% endif %}>Koramangala</option>
-        <option value="HSR Layout"  {% if request.GET.location == 'HSR Layout'  %}selected{% endif %}>HSR Layout</option>
-        <option value="Whitefield"  {% if request.GET.location == 'Whitefield'  %}selected{% endif %}>Whitefield</option>
+        {% for area in report_areas %}
+          <option value="{{ area }}" {% if request.GET.location == area %}selected{% endif %}>{{ area }}</option>
+        {% endfor %}
       </select>
     </div>
     <div class="filter-group">

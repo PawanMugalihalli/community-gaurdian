@@ -172,9 +172,9 @@
         <label for="location">Location <span style="color:var(--red)">*</span></label>
         <select id="location" name="location" required>
           <option value="" disabled {% if not report_location %}selected{% endif %}>Select area</option>
-          <option value="Koramangala" {% if report_location == 'Koramangala' %}selected{% endif %}>Koramangala</option>
-          <option value="HSR Layout"  {% if report_location == 'HSR Layout'  %}selected{% endif %}>HSR Layout</option>
-          <option value="Whitefield"  {% if report_location == 'Whitefield'  %}selected{% endif %}>Whitefield</option>
+          {% for area in report_areas %}
+            <option value="{{ area }}" {% if report_location == area %}selected{% endif %}>{{ area }}</option>
+          {% endfor %}
         </select>
         <p class="text-muted mt-1" style="font-size:.78rem;">Same areas as the feed — where this incident happened.</p>
       </div>

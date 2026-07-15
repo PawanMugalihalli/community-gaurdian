@@ -2,301 +2,301 @@
   {
     "title": "Phishing SMS received",
     "description": "Got a suspicious OTP text from an unknown number asking for bank details and credit card information. The message claimed to be from a major bank.",
-    "location": "Koramangala",
+    "location": "Bangalore",
     "source": "user_report"
   },
   {
     "title": "Suspicious person near apartments",
     "description": "A person was seen checking car doors in the apartment parking lot at 2am. They fled when approached by security.",
-    "location": "Koramangala",
+    "location": "Mumbai",
     "source": "user_report"
   },
   {
     "title": "Ugh traffic is so bad today",
     "description": "Can't believe how terrible the traffic is today. Why does everyone drive so badly? So frustrated with this city.",
-    "location": "Koramangala",
+    "location": "Delhi",
     "source": "social_media"
   },
   {
     "title": "Suspicious person near apartments again",
     "description": "Saw someone trying car door handles in the parking area late at night. Very concerning behaviour.",
-    "location": "Koramangala",
+    "location": "Chennai",
     "source": "user_report"
   },
   {
     "title": "Someone checking cars in parking",
     "description": "A suspicious individual was spotted checking multiple car doors in the apartment complex parking lot around midnight.",
-    "location": "Koramangala",
+    "location": "Kolkata",
     "source": "user_report"
   },
   {
     "title": "Fake bank SMS",
     "description": "Received an SMS pretending to be from my bank asking me to verify my account by sharing OTP and card details immediately.",
-    "location": "Koramangala",
+    "location": "Pune",
     "source": "user_report"
   },
   {
     "title": "Phishing message received",
     "description": "Got a text message asking for my bank OTP and credit card details. The number looked suspicious and unofficial.",
-    "location": "Koramangala",
+    "location": "Hyderabad",
     "source": "user_report"
   },
   {
     "title": "Street harassment near metro",
-    "description": "A woman reported being followed by an unknown man near the Koramangala metro exit late in the evening. She managed to reach a crowded area safely.",
-    "location": "Koramangala",
+    "description": "A woman reported being followed by an unknown man near a metro exit late in the evening. She managed to reach a crowded area safely.",
+    "location": "Ahmedabad",
     "source": "user_report"
   },
   {
     "title": "Laptop stolen from cafe",
     "description": "A laptop was stolen from a popular cafe on 5th Block. The owner stepped away briefly and returned to find it missing. CCTV footage requested.",
-    "location": "Koramangala",
+    "location": "Jaipur",
     "source": "user_report"
   },
   {
     "title": "Waterlogging after heavy rain",
     "description": "The road near the BDA complex is completely waterlogged after last night's rain. Knee-deep water, several vehicles stalled.",
-    "location": "Koramangala",
+    "location": "Lucknow",
     "source": "user_report"
   },
   {
     "title": "Fake delivery scam",
     "description": "Residents received calls from someone claiming to be a delivery agent asking for an OTP to release a package. No package was expected. Likely a scam.",
-    "location": "Koramangala",
+    "location": "Surat",
     "source": "user_report"
   },
   {
     "title": "Gas leak reported in apartment",
     "description": "Strong smell of gas reported on the 3rd floor of an apartment building on 7th Main. Residents evacuated the floor. Gas agency contacted.",
-    "location": "Koramangala",
+    "location": "Mysuru",
     "source": "user_report"
   },
   {
     "title": "This place is honestly terrible",
     "description": "So annoyed with how dirty and loud this neighbourhood is. Nobody cares about anyone else here. Worst decision moving here.",
-    "location": "Koramangala",
+    "location": "Patna",
     "source": "social_media"
   },
   {
     "title": "Thunderstorm warning for evening",
-    "description": "Karnataka weather department has issued a thunderstorm warning for Koramangala and surrounding areas. Heavy rain and lightning expected between 6pm and 10pm.",
-    "location": "Koramangala",
+    "description": "Local weather department has issued a thunderstorm warning for the city and surrounding areas. Heavy rain and lightning expected between 6pm and 10pm.",
+    "location": "Nagpur",
     "source": "news"
   },
   {
     "title": "Power outage affecting 3rd and 4th block",
-    "description": "Power has been out since 8pm in 3rd and 4th block. BESCOM has been notified but no ETA given. Residents advised to use backup lighting.",
-    "location": "Koramangala",
+    "description": "Power has been out since 8pm in 3rd and 4th block. The distribution company has been notified but no ETA given. Residents advised to use backup lighting.",
+    "location": "Bhopal",
     "source": "user_report"
   },
   {
     "title": "Bike theft near supermarket",
     "description": "A motorcycle was stolen from outside a supermarket on 1st Main in broad daylight. Owner has filed a complaint. CCTV footage being reviewed.",
-    "location": "Koramangala",
+    "location": "Chandigarh",
     "source": "user_report"
   },
   {
     "title": "Fraud call impersonating police",
     "description": "Received a call from someone claiming to be a police officer demanding immediate payment to avoid arrest. Classic fraud attempt targeting elderly residents.",
-    "location": "HSR Layout",
+    "location": "Agra",
     "source": "user_report"
   },
   {
     "title": "Heavy rainfall and waterlogging",
-    "description": "Severe waterlogging reported near the HSR underpass. Water level is knee deep and vehicles are getting stuck. Avoid the area if possible.",
-    "location": "HSR Layout",
+    "description": "Severe waterlogging reported near an underpass. Water level is knee deep and vehicles are getting stuck. Avoid the area if possible.",
+    "location": "Mangaluru",
     "source": "user_report"
   },
   {
     "title": "Bike theft reported",
     "description": "A motorcycle was stolen from outside a supermarket in broad daylight. CCTV footage is being reviewed. Residents advised to use locks.",
-    "location": "HSR Layout",
+    "location": "Mumbai",
     "source": "user_report"
   },
   {
     "title": "Why is everyone so rude here",
-    "description": "So annoying how people just cut queues at the grocery store in HSR. Unbelievable behaviour. This city has no civic sense whatsoever.",
-    "location": "HSR Layout",
+    "description": "So annoying how people just cut queues at the grocery store. Unbelievable behaviour. This city has no civic sense whatsoever.",
+    "location": "Delhi",
     "source": "social_media"
   },
   {
     "title": "ATM card skimming device found",
-    "description": "A skimming device was discovered on an ATM near the HSR Layout BDA complex. Customers who used it in the last 48 hours are advised to check their bank statements.",
-    "location": "HSR Layout",
+    "description": "A skimming device was discovered on an ATM. Customers who used it in the last 48 hours are advised to check their bank statements.",
+    "location": "Chennai",
     "source": "news"
   },
   {
     "title": "Stray dog attack near park",
-    "description": "A resident was bitten by a stray dog near Sector 2 park early in the morning. The person has been taken to a nearby clinic for anti-rabies treatment.",
-    "location": "HSR Layout",
+    "description": "A resident was bitten by a stray dog near a park early in the morning. The person has been taken to a nearby clinic for anti-rabies treatment.",
+    "location": "Kolkata",
     "source": "user_report"
   },
   {
     "title": "Ransomware attack on local business",
-    "description": "A small business owner in HSR Layout reported their office computers were infected with ransomware. Attackers demanded payment in cryptocurrency. Police complaint filed.",
-    "location": "HSR Layout",
+    "description": "A small business owner reported their office computers were infected with ransomware. Attackers demanded payment in cryptocurrency. Police complaint filed.",
+    "location": "Pune",
     "source": "user_report"
   },
   {
     "title": "Flash flood warning issued",
-    "description": "BBMP has issued a flash flood advisory for low-lying areas of HSR Layout following heavy rainfall upstream. Residents near stormwater drains advised to stay alert.",
-    "location": "HSR Layout",
+    "description": "Flash flood advisory issued for low-lying areas following heavy rainfall upstream. Residents near stormwater drains advised to stay alert.",
+    "location": "Hyderabad",
     "source": "news"
   },
   {
     "title": "Chain snatching near sector 7",
     "description": "Two men on a bike snatched a gold chain from a woman walking near Sector 7 in the evening. A police complaint has been filed and the case is under investigation.",
-    "location": "HSR Layout",
+    "location": "Ahmedabad",
     "source": "user_report"
   },
   {
     "title": "Broken street light on 27th main",
     "description": "The street light on 27th Main near the bus stop has been non-functional for over a week. The area is completely dark at night and unsafe for pedestrians.",
-    "location": "HSR Layout",
+    "location": "Jaipur",
     "source": "user_report"
   },
   {
     "title": "Ugh the roads here are disgusting",
-    "description": "Can't believe the state of the roads in HSR. Every monsoon it's the same thing. Nobody fixes anything. So frustrated.",
-    "location": "HSR Layout",
+    "description": "Can't believe the state of the roads during monsoon. Every season it's the same thing. Nobody fixes anything. So frustrated.",
+    "location": "Lucknow",
     "source": "social_media"
   },
   {
     "title": "Suspicious van parked for 3 days",
-    "description": "An unmarked white van has been parked outside a residential building on 18th Cross for 3 days. No one has seen the driver. Residents feel uneasy.",
-    "location": "HSR Layout",
+    "description": "An unmarked white van has been parked outside a residential building for 3 days. No one has seen the driver. Residents feel uneasy.",
+    "location": "Surat",
     "source": "user_report"
   },
   {
     "title": "Identity theft complaint filed",
     "description": "A resident discovered that someone had opened a credit card in their name using stolen documents. The case has been reported to cybercrime cell.",
-    "location": "HSR Layout",
+    "location": "Mysuru",
     "source": "user_report"
   },
   {
     "title": "Electrical sparking on main road",
-    "description": "Electrical sparking observed from a transformer on the main road near the water tank. BESCOM notified. Residents advised to keep distance.",
-    "location": "HSR Layout",
+    "description": "Electrical sparking observed from a transformer on the main road near the water tank. Distribution company notified. Residents advised to keep distance.",
+    "location": "Patna",
     "source": "user_report"
   },
   {
     "title": "Suspicious email from bank",
     "description": "Received an email asking to verify account details by clicking a link. The sender domain looked fake. Possible phishing attempt targeting bank customers.",
-    "location": "Whitefield",
+    "location": "Nagpur",
     "source": "user_report"
   },
   {
     "title": "Gas leak smell near residential area",
-    "description": "Strong smell of gas reported near the residential complex on the main road. Residents have been asked to stay away from the area until authorities arrive.",
-    "location": "Whitefield",
+    "description": "Strong smell of gas reported near a residential complex on the main road. Residents have been asked to stay away from the area until authorities arrive.",
+    "location": "Bhopal",
     "source": "user_report"
   },
   {
     "title": "Thunderstorm warning issued",
-    "description": "Local weather authorities have issued a thunderstorm warning for Whitefield and ITPL area. Heavy rain, lightning and strong winds expected. Stay indoors if possible.",
-    "location": "Whitefield",
+    "description": "Local weather authorities have issued a thunderstorm warning for the city and nearby areas. Heavy rain, lightning and strong winds expected. Stay indoors if possible.",
+    "location": "Chandigarh",
     "source": "news"
   },
   {
     "title": "ATM skimming device found near ITPL",
-    "description": "A skimming device was discovered on an ATM near the ITPL main gate. Customers who used the ATM in the last 48 hours are advised to check their statements immediately.",
-    "location": "Whitefield",
+    "description": "A skimming device was discovered on an ATM. Customers who used the ATM in the last 48 hours are advised to check their statements immediately.",
+    "location": "Agra",
     "source": "news"
   },
   {
     "title": "Laptop bag snatched near tech park",
-    "description": "An employee leaving a tech park had their laptop bag snatched by a man on a motorcycle near Gate 2. Police complaint registered and CCTV footage requested.",
-    "location": "Whitefield",
+    "description": "An employee leaving a tech park had their laptop bag snatched by a man on a motorcycle. Police complaint registered and CCTV footage requested.",
+    "location": "Mangaluru",
     "source": "user_report"
   },
   {
     "title": "Vishing call targeting IT employees",
     "description": "Multiple residents received calls from someone claiming to be from their company's IT department asking for VPN credentials and system passwords. Do not share credentials over phone.",
-    "location": "Whitefield",
+    "location": "Rajkot",
     "source": "user_report"
   },
   {
-    "title": "Flooding near Varthur lake area",
-    "description": "Heavy flooding reported near Varthur lake following continuous rainfall. Roads submerged, several cars stranded. Avoid the Varthur-Whitefield stretch entirely.",
-    "location": "Whitefield",
+    "title": "Flooding near lake area",
+    "description": "Heavy flooding reported near a local lake following continuous rainfall. Roads submerged, several cars stranded. Avoid the flooded stretch entirely.",
+    "location": "Shimla",
     "source": "news"
   },
   {
     "title": "This city is just hopeless honestly",
     "description": "Every single day something goes wrong here. The infrastructure, the traffic, the noise. I just can't with this place anymore.",
-    "location": "Whitefield",
+    "location": "Srinagar",
     "source": "social_media"
   },
   {
     "title": "Data breach at popular food app",
-    "description": "A food delivery app popular among Whitefield residents confirmed a data breach exposing names, addresses and payment details. Users advised to change passwords immediately.",
-    "location": "Whitefield",
+    "description": "A food delivery app confirmed a data breach exposing names, addresses and payment details. Users advised to change passwords immediately.",
+    "location": "Ludhiana",
     "source": "news"
   },
   {
     "title": "Suspicious persons near school gate",
     "description": "Two unknown men were seen loitering near a school gate during dismissal time. School security alerted. Parents advised to be present during pickup hours.",
-    "location": "Whitefield",
+    "location": "Jalandhar",
     "source": "user_report"
   },
   {
     "title": "Online job scam targeting freshers",
-    "description": "Multiple reports of a fake job portal targeting fresh graduates in Whitefield. Victims paid registration fees and never heard back. Cybercrime complaint filed.",
-    "location": "Whitefield",
+    "description": "Multiple reports of a fake job portal targeting fresh graduates. Victims paid registration fees and never heard back. Cybercrime complaint filed.",
+    "location": "Baroda",
     "source": "user_report"
   },
   {
     "title": "Tree fell on road after storm",
-    "description": "A large tree fell across the main road near the Whitefield railway station following last night's storm. Road partially blocked. BBMP crew deployed.",
-    "location": "Whitefield",
+    "description": "A large tree fell across the main road following last night's storm. Road partially blocked. City crew deployed.",
+    "location": "Patiala",
     "source": "user_report"
   },
   {
     "title": "Drunk driver hit two parked cars",
-    "description": "A drunk driver hit two parked cars on the service road near Whitefield bus stand at midnight. Police arrived and the driver was detained. Owners should check for damage.",
-    "location": "Whitefield",
+    "description": "A drunk driver hit two parked cars on the service road at midnight. Police arrived and the driver was detained. Owners should check for damage.",
+    "location": "Nashik",
     "source": "user_report"
   },
   {
     "title": "UPI fraud targeting senior citizens",
-    "description": "Several elderly residents in Whitefield reported being tricked into sending money via UPI by callers claiming to offer government pension benefits. Do not share UPI pins with anyone.",
-    "location": "Whitefield",
+    "description": "Several elderly residents reported being tricked into sending money via UPI by callers claiming to offer government pension benefits. Do not share UPI pins with anyone.",
+    "location": "Navi Mumbai",
     "source": "user_report"
   },
   {
     "title": "Broken water main flooding street",
-    "description": "A water main burst on the service road near the old market area. The street has been flooded since morning. BWSSB notified but repairs yet to begin.",
-    "location": "Whitefield",
+    "description": "A water main burst on the service road near the old market area. The street has been flooded since morning. City notified but repairs yet to begin.",
+    "location": "Panchkula",
     "source": "user_report"
   },
   {
     "title": "Fire in commercial building",
-    "description": "A fire broke out on the second floor of a commercial building near EPIP Zone. Fire department responded within 15 minutes. No casualties reported. Building evacuated.",
-    "location": "Whitefield",
+    "description": "A fire broke out on the second floor of a commercial building. Fire department responded within 15 minutes. No casualties reported. Building evacuated.",
+    "location": "Patna",
     "source": "news"
   },
   {
     "title": "Heatwave advisory issued",
-    "description": "IMD has issued a heatwave advisory for Whitefield and eastern Bangalore. Temperatures expected to cross 40 degrees. Elderly and children advised to stay indoors between 11am and 4pm.",
-    "location": "Whitefield",
+    "description": "IMD has issued a heatwave advisory for the city and eastern areas. Temperatures expected to cross 40 degrees. Elderly and children advised to stay indoors between 11am and 4pm.",
+    "location": "Pune",
     "source": "news"
   },
   {
     "title": "Wallet stolen at crowded market",
-    "description": "A resident reported their wallet being pickpocketed at the crowded weekend market near Whitefield main road. Be vigilant with valuables in crowded areas.",
-    "location": "Whitefield",
+    "description": "A resident reported their wallet being pickpocketed at the crowded weekend market. Be vigilant with valuables in crowded areas.",
+    "location": "Mumbai",
     "source": "user_report"
   },
   {
     "title": "Fake electricity bill scam",
-    "description": "Residents received WhatsApp messages with fake BESCOM electricity bills containing a malicious payment link. Do not click. Pay only through the official BESCOM app or website.",
-    "location": "Whitefield",
+    "description": "Residents received WhatsApp messages with fake electricity bills containing a malicious payment link. Do not click. Pay only through official apps or websites.",
+    "location": "Ahmedabad",
     "source": "user_report"
   },
   {
     "title": "Road cave-in near signal",
-    "description": "A section of road near the Whitefield signal caved in overnight, creating a large pothole. Two-wheeler riders at risk. BBMP has been informed but no barricades placed yet.",
-    "location": "Whitefield",
+    "description": "A section of road near a signal caved in overnight, creating a large pothole. Two-wheeler riders at risk. City has been informed but no barricades placed yet.",
+    "location": "Surat",
     "source": "user_report"
   }
 ]

@@ -3,13 +3,15 @@ import requests
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from incidents.ingestion.cities import CITIES
 
 logger = logging.getLogger(__name__)
 
 API_BASE = "http://localhost:8000/api"
 
 # Areas offered in feed / profile / report UI (keep in sync with templates)
-REPORT_AREAS = frozenset({"Koramangala", "HSR Layout", "Whitefield"})
+# Use the canonical city list from the ingestion module so templates stay in sync.
+REPORT_AREAS = frozenset(CITIES.keys())
 
 
 def _report_location_select_value(form_data, user):
@@ -26,6 +28,7 @@ def _report_page_context(user, form_data):
         "profile_location": user.location,
         "form_data":        form_data,
         "report_location":  _report_location_select_value(form_data, user),
+        "report_areas":     sorted(REPORT_AREAS),
     }
 
 
@@ -72,6 +75,7 @@ def feed_view(request):
         "personalised":        personalised,
         "high_severity_count": stats["high_severity_count"],
         "ai_enriched_count":   stats["ai_enriched_count"],
+        "report_areas":       sorted(REPORT_AREAS),
     })
 
 
@@ -90,6 +94,7 @@ def profile_view(request):
                 "profile":           user,
                 "selected_concerns": concerns,
                 "edit_mode":         True,
+                "report_areas":      sorted(REPORT_AREAS),
             })
 
         try:
@@ -107,6 +112,7 @@ def profile_view(request):
         "profile":           user,
         "selected_concerns": user.concerns,
         "edit_mode":         request.GET.get("edit") == "1",
+        "report_areas":      sorted(REPORT_AREAS),
     })
 
 

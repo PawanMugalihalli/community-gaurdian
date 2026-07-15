@@ -117,8 +117,13 @@ docker-compose up --build -d
 # 4. Run migrations
 docker-compose exec backend python manage.py migrate
 
-# 5. Load the synthetic dataset (50 fake incidents, no real data)
+# 5. Load the synthetic dataset (50 fake incidents, no real data) 
 docker-compose exec backend python manage.py load_sample_data
+
+# or wait for the scheduler (or trigger RSS ingestion manually if implemented)
+#
+# RSS feeds are fetched automatically every 30 minutes and
+# AI enrichment runs every 5 minutes.
 
 # 6. Trigger the enrichment batch job manually
 #
@@ -290,7 +295,7 @@ docker-compose exec backend python manage.py test incidents.tests
 
 **Happy path** (`test_happy_path.py`) — 2 tests:
 - Creates 5 incidents (3 real, 2 noise), runs enrichment, asserts feed returns only real incidents with valid category, severity (1–5), and non-empty action steps
-- Hits `/api/incidents/?location=Koramangala` directly and asserts no noise leaks through the API response
+- Hits `/api/incidents/?location=Bangalore` directly and asserts no noise leaks through the API response
 
 **Edge cases** (`test_edge_cases.py`) — 3 tests:
 - Mocks Groq to raise an exception — asserts fallback runs silently and all incidents are enriched with `ai_enriched=False`
@@ -303,7 +308,7 @@ Note: happy path tests make real Groq API calls. In CI/CD these should be mocked
 
 ## Synthetic Dataset
 
-`data/incidents_sample.json` contains 50 fake incidents across 3 Bangalore neighbourhoods (Koramangala, HSR Layout, Whitefield):
+`data/incidents_sample.json` contains 50 fake incidents for Bangalore (sample locations):
 - Digital scams — phishing SMS, ATM skimming, data breaches, fraud calls, UPI fraud, vishing
 - Physical safety — theft, suspicious persons, chain snatching, gas leak, fire, drunk driver
 - Weather — waterlogging, thunderstorm warnings, flash floods, heatwave advisory

@@ -12,7 +12,7 @@ class Incident(models.Model):
     title       = models.CharField(max_length=255)
     description = models.TextField()
     location    = models.CharField(max_length=100)
-    source      = models.CharField(max_length=100, default='user_report')
+    source = models.URLField(max_length=500,default='')
     created_at  = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
 

@@ -273,9 +273,9 @@
           <label for="location">Location</label>
           <select id="location" name="location" required>
             <option value="" disabled>Select your area</option>
-            <option value="Koramangala" {% if profile.location == 'Koramangala' %}selected{% endif %}>Koramangala</option>
-            <option value="HSR Layout"  {% if profile.location == 'HSR Layout'  %}selected{% endif %}>HSR Layout</option>
-            <option value="Whitefield"  {% if profile.location == 'Whitefield'  %}selected{% endif %}>Whitefield</option>
+            {% for area in report_areas %}
+              <option value="{{ area }}" {% if profile.location == area %}selected{% endif %}>{{ area }}</option>
+            {% endfor %}
           </select>
         </div>
 
